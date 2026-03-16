@@ -333,6 +333,42 @@
       osc.stop(now + durationMs / 1000 + 0.02);
     }
 
+    function playToneAt(freq, durationMs, delayMs, type = "sine", volume = 0.05) {
+      if (!audioCtx) return;
+      const startAt = audioCtx.currentTime + delayMs / 1000;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startAt);
+
+      gain.gain.setValueAtTime(0.0001, startAt);
+      gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startAt + durationMs / 1000);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(startAt);
+      osc.stop(startAt + durationMs / 1000 + 0.02);
+    }
+
+    function playIntroMelody() {
+      // 開場短旋律，營造開始遊戲的節奏感。
+      const notes = [
+        { f: 392, d: 130, t: 0 },
+        { f: 494, d: 130, t: 150 },
+        { f: 587, d: 160, t: 300 },
+        { f: 784, d: 230, t: 500 },
+        { f: 659, d: 140, t: 790 },
+        { f: 880, d: 260, t: 960 }
+      ];
+
+      notes.forEach((note) => {
+        playToneAt(note.f, note.d, note.t, "triangle", 0.05);
+      });
+    }
+
     function updateMessage(text, type = "") {
       messageEl.textContent = text;
       messageEl.className = "message" + (type ? " " + type : "");
@@ -399,7 +435,7 @@
       startBtn.disabled = true;
       updateMessage("開始！", "good");
       ensureAudio();
-      playTone(520, 120, "square", 0.05);
+      playIntroMelody();
 
       popMole();
       roundTimer = setInterval(tick, 1000);
