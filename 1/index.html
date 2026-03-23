@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>貪吃蛇 Snake Game</title>
+  <style>
+    :root {
+      --bg1: #faf7ef;
+      --bg2: #e8f0d8;
+      --panel: #fffdf6;
+      --ink: #243128;
+      --accent: #d8683f;
+      --accent-dark: #b9512a;
+      --line: #c8d7b3;
+      --snake: #2f8f48;
+      --snake-head: #1f6f35;
+      --food: #c53030;
+      --shadow: rgba(0, 0, 0, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255, 255, 255, 0.8), transparent 32%),
+        radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.45), transparent 28%),
+        linear-gradient(150deg, var(--bg1), var(--bg2));
+      display: grid;
+      place-items: center;
+      padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+    }
+
+    .game {
+      width: min(440px, 100%);
+      background: var(--panel);
+      border-radius: 20px;
+      box-shadow: 0 18px 40px var(--shadow);
+      overflow: hidden;
+    }
+
+    .top {
+      padding: 14px;
+      border-bottom: 1px solid #ede6d5;
+      background: linear-gradient(180deg, #ffffff, #f9f2e2);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.15rem, 5vw, 1.45rem);
+    }
+
+    .stats {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      border: 1px solid #eadfc8;
+      background: #fff;
+      padding: 6px 8px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .board-wrap {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+    }
+
+    canvas {
+      width: min(86vw, 360px);
+      height: min(86vw, 360px);
+      max-width: 360px;
+      max-height: 360px;
+      border-radius: 14px;
+      border: 2px solid #cad8b6;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px) 0 0 / 9% 9%,
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px) 0 0 / 9% 9%,
+        #edf6dc;
+      touch-action: none;
+    }
+
+    .actions {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+    }
+
+    button {
+      flex: 1;
+      border: 0;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      min-height: 44px;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+    .status {
+      width: 100%;
+      font-size: 0.92rem;
+      text-align: center;
+      min-height: 1.2em;
+      font-weight: 700;
+    }
+
+    .pad {
+      width: 172px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .pad button {
+      min-height: 44px;
+      padding: 0;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      background: #527f5e;
+    }
+
+    .pad .empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .footer {
+      font-size: 0.84rem;
+      color: #5a675d;
+      padding: 0 14px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .credit {
+      font-weight: 800;
+      color: #395a45;
+    }
+
+    @media (min-width: 700px) {
+      .game {
+        width: min(520px, 100%);
+      }
+
+      canvas {
+        width: 380px;
+        height: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="game" aria-label="貪吃蛇遊戲">
+    <section class="top">
+      <h1>貪吃蛇</h1>
+      <div class="stats" aria-live="polite">
+        <div class="pill">分數 <span id="score">0</span></div>
+        <div class="pill">最高 <span id="best">0</span></div>
+        <div class="pill">速度 <span id="speed">1</span>x</div>
+      </div>
+    </section>
+
+    <section class="board-wrap">
+      <canvas id="board" width="360" height="360" aria-label="貪吃蛇畫面"></canvas>
+
+      <div class="actions">
+        <button id="startBtn" type="button">開始</button>
+        <button id="restartBtn" type="button">重新開始</button>
+      </div>
+
+      <div id="status" class="status">按開始，或用方向鍵控制</div>
+
+      <div class="pad" aria-label="手機方向鍵">
+        <button class="empty" aria-hidden="true"></button>
+        <button data-dir="up" type="button">↑</button>
+        <button class="empty" aria-hidden="true"></button>
+        <button data-dir="left" type="button">←</button>
+        <button data-dir="down" type="button">↓</button>
+        <button data-dir="right" type="button">→</button>
+      </div>
+    </section>
+
+    <p class="footer">
+      <span>吃紅點加分，撞牆或撞到自己就結束。</span>
+      <span class="credit">設計者：安安</span>
+    </p>
+  </main>
+
+  <script>
+    const GRID = 20;
+    const CELL = 18;
+    const BASE_STEP_MS = 170;
+
+    const canvas = document.getElementById("board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const bestEl = document.getElementById("best");
+    const speedEl = document.getElementById("speed");
+    const statusEl = document.getElementById("status");
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    let snake = [];
+    let direction = "right";
+    let pendingDirection = "right";
+    let food = { x: 0, y: 0 };
+    let score = 0;
+    let best = Number(localStorage.getItem("snakeBest") || 0);
+    let speedLevel = 1;
+    let timerId = null;
+    let running = false;
+    let audioCtx = null;
+
+    bestEl.textContent = String(best);
+
+    function ensureAudio() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq, durationMs, type = "triangle", volume = 0.05) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + durationMs / 1000);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + durationMs / 1000 + 0.03);
+    }
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function resetSnake() {
+      snake = [
+        { x: 6, y: 10 },
+        { x: 5, y: 10 },
+        { x: 4, y: 10 }
+      ];
+      direction = "right";
+      pendingDirection = "right";
+      score = 0;
+      speedLevel = 1;
+      scoreEl.textContent = "0";
+      speedEl.textContent = "1";
+    }
+
+    function randomCell() {
+      return Math.floor(Math.random() * GRID);
+    }
+
+    function placeFood() {
+      let valid = false;
+      while (!valid) {
+        food = { x: randomCell(), y: randomCell() };
+        valid = !snake.some((part) => part.x === food.x && part.y === food.y);
+      }
+    }
+
+    function drawRoundedCell(x, y, color, radius = 5) {
+      const px = x * CELL;
+      const py = y * CELL;
+      const size = CELL;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(px + radius, py);
+      ctx.arcTo(px + size, py, px + size, py + size, radius);
+      ctx.arcTo(px + size, py + size, px, py + size, radius);
+      ctx.arcTo(px, py + size, px, py, radius);
+      ctx.arcTo(px, py, px + size, py, radius);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawRoundedCell(food.x, food.y, "#c53030", 8);
+
+      snake.forEach((part, index) => {
+        const color = index === 0 ? "#1f6f35" : "#2f8f48";
+        drawRoundedCell(part.x, part.y, color, 4);
+      });
+    }
+
+    function isOpposite(a, b) {
+      return (
+        (a === "up" && b === "down") ||
+        (a === "down" && b === "up") ||
+        (a === "left" && b === "right") ||
+        (a === "right" && b === "left")
+      );
+    }
+
+    function setDirection(next) {
+      if (!isOpposite(direction, next)) {
+        pendingDirection = next;
+      }
+    }
+
+    function nextHead(head, dir) {
+      if (dir === "up") return { x: head.x, y: head.y - 1 };
+      if (dir === "down") return { x: head.x, y: head.y + 1 };
+      if (dir === "left") return { x: head.x - 1, y: head.y };
+      return { x: head.x + 1, y: head.y };
+    }
+
+    function gameOver() {
+      running = false;
+      clearInterval(timerId);
+
+      if (score > best) {
+        best = score;
+        localStorage.setItem("snakeBest", String(best));
+      }
+
+      bestEl.textContent = String(best);
+      setStatus("遊戲結束，按重新開始");
+      playTone(220, 180, "sawtooth", 0.045);
+      setTimeout(() => playTone(170, 220, "sawtooth", 0.04), 140);
+    }
+
+    function step() {
+      direction = pendingDirection;
+      const head = snake[0];
+      const newHead = nextHead(head, direction);
+
+      const hitWall =
+        newHead.x < 0 ||
+        newHead.y < 0 ||
+        newHead.x >= GRID ||
+        newHead.y >= GRID;
+
+      if (hitWall || snake.some((part) => part.x === newHead.x && part.y === newHead.y)) {
+        gameOver();
+        return;
+      }
+
+      snake.unshift(newHead);
+
+      if (newHead.x === food.x && newHead.y === food.y) {
+        score += 1;
+        scoreEl.textContent = String(score);
+        speedLevel = Math.min(8, 1 + Math.floor(score / 4));
+        speedEl.textContent = String(speedLevel);
+        placeFood();
+        playTone(840, 70, "triangle", 0.05);
+
+        clearInterval(timerId);
+        timerId = setInterval(step, Math.max(70, BASE_STEP_MS - (speedLevel - 1) * 12));
+      } else {
+        snake.pop();
+      }
+
+      draw();
+    }
+
+    function startGame() {
+      ensureAudio();
+      resetSnake();
+      placeFood();
+      draw();
+
+      clearInterval(timerId);
+      timerId = setInterval(step, BASE_STEP_MS);
+      running = true;
+      setStatus("遊戲中，別撞牆");
+      playTone(520, 80, "triangle", 0.04);
+      setTimeout(() => playTone(700, 120, "triangle", 0.05), 110);
+    }
+
+    function handleDirectionInput(dir) {
+      if (!running) return;
+      setDirection(dir);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key;
+      if (key === "ArrowUp") setDirection("up");
+      else if (key === "ArrowDown") setDirection("down");
+      else if (key === "ArrowLeft") setDirection("left");
+      else if (key === "ArrowRight") setDirection("right");
+    });
+
+    document.querySelectorAll("[data-dir]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        handleDirectionInput(btn.dataset.dir);
+      });
+    });
+
+    startBtn.addEventListener("click", () => {
+      if (!running) {
+        startGame();
+      }
+    });
+
+    restartBtn.addEventListener("click", startGame);
+
+    resetSnake();
+    placeFood();
+    draw();
+  </script>
+</body>
+</html>
