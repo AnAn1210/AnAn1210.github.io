@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">打地鼠縮圖</title>
+  <desc id="desc">綠色草地背景，中間有地洞和可愛地鼠。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#e8f4cd"/>
+      <stop offset="1" stop-color="#cfe5a6"/>
+    </linearGradient>
+    <radialGradient id="hole" cx="50%" cy="52%" r="52%">
+      <stop offset="0" stop-color="#3f261a"/>
+      <stop offset="1" stop-color="#5c3b2e"/>
+    </radialGradient>
+    <linearGradient id="mole" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#96684d"/>
+      <stop offset="1" stop-color="#704b37"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <circle cx="100" cy="80" r="70" fill="#ffffff66"/>
+  <circle cx="560" cy="20" r="90" fill="#ffffff44"/>
+  <ellipse cx="320" cy="258" rx="190" ry="68" fill="url(#hole)"/>
+  <ellipse cx="320" cy="300" rx="150" ry="16" fill="#ffffff22"/>
+  <g transform="translate(320 186)">
+    <ellipse cx="0" cy="12" rx="80" ry="92" fill="url(#mole)"/>
+    <circle cx="-24" cy="0" r="8" fill="#1e1713"/>
+    <circle cx="24" cy="0" r="8" fill="#1e1713"/>
+    <ellipse cx="0" cy="30" rx="22" ry="14" fill="#ecc8af"/>
+    <ellipse cx="0" cy="30" rx="8" ry="4" fill="#b66a4e"/>
+  </g>
+  <rect x="24" y="24" rx="12" ry="12" width="192" height="52" fill="#ffffffcc"/>
+  <text x="44" y="58" font-size="32" font-family="'Noto Sans TC', sans-serif" fill="#2f3c30">打地鼠</text>
+</svg>

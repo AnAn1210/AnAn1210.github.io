@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">貪吃蛇縮圖</title>
+  <desc id="desc">方格背景上的綠色貪吃蛇與紅色食物。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7f2df"/>
+      <stop offset="1" stop-color="#e1edc6"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#bg)"/>
+  <g stroke="#00000014" stroke-width="1">
+    <path d="M0 40H640M0 80H640M0 120H640M0 160H640M0 200H640M0 240H640M0 280H640M0 320H640"/>
+    <path d="M40 0V360M80 0V360M120 0V360M160 0V360M200 0V360M240 0V360M280 0V360M320 0V360M360 0V360M400 0V360M440 0V360M480 0V360M520 0V360M560 0V360M600 0V360"/>
+  </g>
+  <g fill="#2e8f49">
+    <rect x="146" y="182" width="46" height="46" rx="10"/>
+    <rect x="196" y="182" width="46" height="46" rx="10"/>
+    <rect x="246" y="182" width="46" height="46" rx="10"/>
+    <rect x="296" y="182" width="46" height="46" rx="10"/>
+    <rect x="296" y="132" width="46" height="46" rx="10"/>
+    <rect x="346" y="132" width="46" height="46" rx="10"/>
+  </g>
+  <rect x="346" y="132" width="46" height="46" rx="10" fill="#1f6f35"/>
+  <circle cx="380" cy="147" r="4" fill="#ffffff"/>
+  <circle cx="420" cy="210" r="14" fill="#cc3a3a"/>
+  <rect x="24" y="24" rx="12" ry="12" width="192" height="52" fill="#ffffffcc"/>
+  <text x="44" y="58" font-size="32" font-family="'Noto Sans TC', sans-serif" fill="#2f3c30">貪吃蛇</text>
+</svg>
