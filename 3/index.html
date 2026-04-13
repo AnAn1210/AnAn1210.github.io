@@ -39,6 +39,7 @@
       display: grid;
       place-items: center;
       padding: 16px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .calc {
@@ -82,6 +83,7 @@
       flex-direction: column;
       justify-content: space-between;
       box-shadow: inset 0 8px 18px rgba(46, 65, 50, 0.18);
+      overflow: hidden;
     }
 
     .mode-row {
@@ -111,7 +113,10 @@
       font-family: "Orbitron", sans-serif;
       font-size: clamp(1.05rem, 2.8vw, 2.1rem);
       color: #3b4a41;
-      word-break: break-all;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      font-variant-numeric: tabular-nums;
     }
 
     .result {
@@ -122,11 +127,43 @@
       line-height: 1.04;
       font-weight: 700;
       color: #1f2d25;
-      word-break: break-all;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      font-variant-numeric: tabular-nums;
     }
 
     .pad {
       padding: 0 12px 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .fn-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .op-grid {
+      display: grid;
+      grid-template-rows: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .extra-grid {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 10px;
@@ -141,6 +178,7 @@
       background: var(--btn);
       cursor: pointer;
       transition: transform 0.12s ease, filter 0.18s ease;
+      touch-action: manipulation;
     }
 
     button:hover {
@@ -165,7 +203,6 @@
 
     .eq {
       background: var(--btn-eq);
-      grid-column: span 2;
     }
 
     .eq:hover {
@@ -187,18 +224,80 @@
       font-weight: 700;
     }
 
+    .designer {
+      margin-top: 0;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      width: fit-content;
+    }
+
     @media (max-width: 760px) {
-      .pad {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+      body {
+        place-items: start center;
+        padding: 8px;
       }
 
-      .eq,
+      .calc {
+        border-radius: 18px;
+      }
+
+      .top {
+        padding: 10px 12px;
+      }
+
+      .title {
+        font-size: 0.95rem;
+      }
+
+      .screen {
+        margin: 0 8px 10px;
+        padding: 12px;
+      }
+
+      .pad {
+        padding: 0 8px 10px;
+        gap: 8px;
+      }
+
+      .fn-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .num-grid {
+        gap: 8px;
+      }
+
+      .op-grid {
+        gap: 8px;
+      }
+
+      .extra-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      button {
+        min-height: 48px;
+        font-size: 0.94rem;
+      }
+
       .wide {
         grid-column: span 2;
       }
 
       .screen {
         min-height: 190px;
+      }
+
+      .back {
+        margin: 0 8px 10px;
+        padding: 7px 10px;
       }
     }
   </style>
@@ -219,47 +318,56 @@
     </section>
 
     <section class="pad" aria-label="計算機按鍵">
-      <button class="fn" data-action="clear" type="button">AC</button>
-      <button class="fn" data-action="delete" type="button">DEL</button>
-      <button class="fn" data-value="(" type="button">(</button>
-      <button class="fn" data-value=")" type="button">)</button>
-      <button class="fn" data-action="const" data-value="PI" type="button">π</button>
-      <button class="fn" data-action="const" data-value="E" type="button">e</button>
+      <div class="fn-grid">
+        <button class="fn" data-action="clear" type="button">AC</button>
+        <button class="fn" data-action="delete" type="button">DEL</button>
+        <button class="fn" data-value="(" type="button">(</button>
+        <button class="fn" data-value=")" type="button">)</button>
+        <button class="fn" data-action="const" data-value="PI" type="button">π</button>
+        <button class="fn" data-action="const" data-value="E" type="button">e</button>
 
-      <button class="fn" data-fn="sin" type="button">sin</button>
-      <button class="fn" data-fn="cos" type="button">cos</button>
-      <button class="fn" data-fn="tan" type="button">tan</button>
-      <button class="fn" data-fn="log" type="button">log</button>
-      <button class="fn" data-fn="ln" type="button">ln</button>
-      <button class="fn" data-fn="sqrt" type="button">√</button>
+        <button class="fn" data-fn="sin" type="button">sin</button>
+        <button class="fn" data-fn="cos" type="button">cos</button>
+        <button class="fn" data-fn="tan" type="button">tan</button>
+        <button class="fn" data-fn="log" type="button">log</button>
+        <button class="fn" data-fn="ln" type="button">ln</button>
+        <button class="fn" data-fn="sqrt" type="button">√</button>
+      </div>
 
-      <button data-value="7" type="button">7</button>
-      <button data-value="8" type="button">8</button>
-      <button data-value="9" type="button">9</button>
-      <button class="op" data-value="/" type="button">÷</button>
-      <button class="op" data-value="^" type="button">xʸ</button>
-      <button class="fn" data-value="%" type="button">%</button>
+      <div class="main-grid">
+        <div class="num-grid">
+          <button data-value="7" type="button">7</button>
+          <button data-value="8" type="button">8</button>
+          <button data-value="9" type="button">9</button>
+          <button data-value="4" type="button">4</button>
+          <button data-value="5" type="button">5</button>
+          <button data-value="6" type="button">6</button>
+          <button data-value="1" type="button">1</button>
+          <button data-value="2" type="button">2</button>
+          <button data-value="3" type="button">3</button>
+        </div>
 
-      <button data-value="4" type="button">4</button>
-      <button data-value="5" type="button">5</button>
-      <button data-value="6" type="button">6</button>
-      <button class="op" data-value="*" type="button">×</button>
-      <button class="fn" data-action="ans" type="button">ANS</button>
-      <button class="fn" data-value="." type="button">.</button>
+        <div class="op-grid">
+          <button class="op" data-value="/" type="button">÷</button>
+          <button class="op" data-value="*" type="button">×</button>
+          <button class="op" data-value="-" type="button">-</button>
+          <button class="op" data-value="+" type="button">+</button>
+          <button class="eq" data-action="calc" type="button">=</button>
+        </div>
+      </div>
 
-      <button data-value="1" type="button">1</button>
-      <button data-value="2" type="button">2</button>
-      <button data-value="3" type="button">3</button>
-      <button class="op" data-value="-" type="button">-</button>
-      <button class="wide" data-value="0" type="button">0</button>
-      <button class="op" data-value="+" type="button">+</button>
-
-      <button class="eq" data-action="calc" type="button">=</button>
+      <div class="extra-grid">
+        <button class="wide" data-value="0" type="button">0</button>
+        <button class="fn" data-value="." type="button">.</button>
+        <button class="fn" data-action="ans" type="button">ANS</button>
+        <button class="fn" data-value="%" type="button">%</button>
+        <button class="op" data-value="^" type="button">xʸ</button>
+      </div>
     </section>
 
     <a class="back" href="../index.html">← 回作品集</a>
 
-    <p class="back" style="margin-top: 0; margin-bottom: 14px; border-radius: 14px; width: fit-content;">
+    <p class="back designer">
       設計者：武翠安
     </p>
   </main>
@@ -304,6 +412,12 @@
       exprEl.textContent = input || "0";
       resultEl.textContent = formatResult(ans);
       modeBtn.textContent = mode;
+      keepDisplayOnRight();
+    }
+
+    function keepDisplayOnRight() {
+      exprEl.scrollLeft = exprEl.scrollWidth;
+      resultEl.scrollLeft = resultEl.scrollWidth;
     }
 
     function calculate() {
@@ -317,8 +431,31 @@
     }
 
     function appendValue(value) {
+      const isOperator = /[+\-*/^%]/.test(value);
+      const last = input.slice(-1);
+
+      if (isOperator) {
+        if (!input && value !== "-") {
+          return;
+        }
+        if (/[+\-*/^%]/.test(last)) {
+          input = input.slice(0, -1) + value;
+          exprEl.textContent = input;
+          keepDisplayOnRight();
+          return;
+        }
+      }
+
+      if (value === ".") {
+        const segment = input.split(/[+\-*/^%()]/).pop();
+        if (segment.includes(".")) {
+          return;
+        }
+      }
+
       input += value;
       exprEl.textContent = input;
+      keepDisplayOnRight();
     }
 
     pad.addEventListener("click", (event) => {
@@ -349,6 +486,7 @@
       if (action === "delete") {
         input = input.slice(0, -1);
         exprEl.textContent = input || "0";
+        keepDisplayOnRight();
         return;
       }
 
@@ -377,12 +515,15 @@
       const key = event.key;
       if (/^[0-9.+\-*/()%]$/.test(key)) {
         appendValue(key);
+      } else if (key === "^") {
+        appendValue("^");
       } else if (key === "Enter") {
         event.preventDefault();
         calculate();
       } else if (key === "Backspace") {
         input = input.slice(0, -1);
         exprEl.textContent = input || "0";
+        keepDisplayOnRight();
       } else if (key === "Escape") {
         input = "";
         ans = 0;
