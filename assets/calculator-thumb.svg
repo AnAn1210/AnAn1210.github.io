@@ -14,7 +14,6 @@
 
   <rect width="640" height="360" fill="url(#bg)"/>
   <path d="M0 0H210L130 180H0Z" fill="#ffffff10"/>
-  <text x="24" y="58" font-size="46" font-family="'Noto Sans TC', sans-serif" font-weight="700" fill="#f0f4f8">何帥</text>
   <text x="390" y="58" font-size="36" font-family="'Noto Sans TC', sans-serif" fill="#d6e0eb">SCIENTIFIC CALCULATOR</text>
 
   <rect x="12" y="92" width="616" height="240" rx="24" fill="url(#screen)" stroke="#7f9576" stroke-width="2"/>
