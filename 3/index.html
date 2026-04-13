@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>工程用計算機</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --shell-a: #344760;
+      --shell-b: #24374d;
+      --screen-a: #b8c8ac;
+      --screen-b: #a7ba9b;
+      --ink: #25342f;
+      --btn: #465a75;
+      --btn-fn: #5d6f89;
+      --btn-op: #d86a45;
+      --btn-op-dark: #b7522f;
+      --btn-eq: #2c8b55;
+      --btn-eq-dark: #226b42;
+      --line: #7f9378;
+      --shadow: rgba(8, 15, 28, 0.26);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans TC", sans-serif;
+      color: #ecf2f8;
+      background:
+        radial-gradient(circle at 18% 6%, rgba(255, 255, 255, 0.16), transparent 34%),
+        linear-gradient(160deg, #1f2d41, #172334 68%);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .calc {
+      width: min(920px, 100%);
+      border-radius: 30px;
+      background: linear-gradient(145deg, var(--shell-a), var(--shell-b));
+      box-shadow: 0 18px 45px var(--shadow);
+      overflow: hidden;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: 0.04em;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .brand {
+      font-size: clamp(1.2rem, 2.8vw, 2rem);
+      font-weight: 800;
+    }
+
+    .title {
+      font-size: clamp(0.86rem, 1.8vw, 1.55rem);
+      opacity: 0.92;
+      text-align: right;
+    }
+
+    .screen {
+      margin: 0 12px 12px;
+      border-radius: 28px;
+      border: 2px solid var(--line);
+      background: linear-gradient(180deg, var(--screen-a), var(--screen-b));
+      color: var(--ink);
+      padding: 18px;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: inset 0 8px 18px rgba(46, 65, 50, 0.18);
+    }
+
+    .mode-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode {
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      font-family: "Orbitron", sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      min-width: 96px;
+      padding: 8px 12px;
+      color: #4d5f50;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .expr {
+      margin-top: 12px;
+      min-height: 1.5em;
+      text-align: right;
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(1.05rem, 2.8vw, 2.1rem);
+      color: #3b4a41;
+      word-break: break-all;
+    }
+
+    .result {
+      margin-top: 10px;
+      text-align: right;
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(2.05rem, 8vw, 4.25rem);
+      line-height: 1.04;
+      font-weight: 700;
+      color: #1f2d25;
+      word-break: break-all;
+    }
+
+    .pad {
+      padding: 0 12px 14px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      min-height: 52px;
+      font: 700 1rem "Orbitron", sans-serif;
+      color: #eff4fb;
+      background: var(--btn);
+      cursor: pointer;
+      transition: transform 0.12s ease, filter 0.18s ease;
+    }
+
+    button:hover {
+      filter: brightness(1.07);
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    .fn {
+      background: var(--btn-fn);
+    }
+
+    .op {
+      background: var(--btn-op);
+    }
+
+    .op:hover {
+      background: var(--btn-op-dark);
+    }
+
+    .eq {
+      background: var(--btn-eq);
+      grid-column: span 2;
+    }
+
+    .eq:hover {
+      background: var(--btn-eq-dark);
+    }
+
+    .wide {
+      grid-column: span 2;
+    }
+
+    .back {
+      margin: 0 12px 14px;
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #d8e5f2;
+      border: 1px solid #59708d;
+      font-weight: 700;
+    }
+
+    @media (max-width: 760px) {
+      .pad {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .eq,
+      .wide {
+        grid-column: span 2;
+      }
+
+      .screen {
+        min-height: 190px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="calc" aria-label="工程用計算機">
+    <header class="top">
+      <div class="brand">安安</div>
+      <div class="title">SCIENTIFIC CALCULATOR</div>
+    </header>
+
+    <section class="screen">
+      <div class="mode-row">
+        <button id="modeBtn" class="mode" type="button">DEG</button>
+      </div>
+      <div id="expr" class="expr">sin(30)</div>
+      <div id="result" class="result">0.5</div>
+    </section>
+
+    <section class="pad" aria-label="計算機按鍵">
+      <button class="fn" data-action="clear" type="button">AC</button>
+      <button class="fn" data-action="delete" type="button">DEL</button>
+      <button class="fn" data-value="(" type="button">(</button>
+      <button class="fn" data-value=")" type="button">)</button>
+      <button class="fn" data-action="const" data-value="PI" type="button">π</button>
+      <button class="fn" data-action="const" data-value="E" type="button">e</button>
+
+      <button class="fn" data-fn="sin" type="button">sin</button>
+      <button class="fn" data-fn="cos" type="button">cos</button>
+      <button class="fn" data-fn="tan" type="button">tan</button>
+      <button class="fn" data-fn="log" type="button">log</button>
+      <button class="fn" data-fn="ln" type="button">ln</button>
+      <button class="fn" data-fn="sqrt" type="button">√</button>
+
+      <button data-value="7" type="button">7</button>
+      <button data-value="8" type="button">8</button>
+      <button data-value="9" type="button">9</button>
+      <button class="op" data-value="/" type="button">÷</button>
+      <button class="op" data-value="^" type="button">xʸ</button>
+      <button class="fn" data-value="%" type="button">%</button>
+
+      <button data-value="4" type="button">4</button>
+      <button data-value="5" type="button">5</button>
+      <button data-value="6" type="button">6</button>
+      <button class="op" data-value="*" type="button">×</button>
+      <button class="fn" data-action="ans" type="button">ANS</button>
+      <button class="fn" data-value="." type="button">.</button>
+
+      <button data-value="1" type="button">1</button>
+      <button data-value="2" type="button">2</button>
+      <button data-value="3" type="button">3</button>
+      <button class="op" data-value="-" type="button">-</button>
+      <button class="wide" data-value="0" type="button">0</button>
+      <button class="op" data-value="+" type="button">+</button>
+
+      <button class="eq" data-action="calc" type="button">=</button>
+    </section>
+
+    <a class="back" href="../index.html">← 回作品集</a>
+
+    <p class="back" style="margin-top: 0; margin-bottom: 14px; border-radius: 14px; width: fit-content;">
+      設計者：武翠安
+    </p>
+  </main>
+
+  <script>
+    const exprEl = document.getElementById("expr");
+    const resultEl = document.getElementById("result");
+    const modeBtn = document.getElementById("modeBtn");
+    const pad = document.querySelector(".pad");
+
+    let mode = "DEG";
+    let input = "sin(30)";
+    let ans = 0.5;
+
+    function toRadians(v) {
+      return mode === "DEG" ? (v * Math.PI) / 180 : v;
+    }
+
+    function evaluateExpression(raw) {
+      let expr = raw;
+      expr = expr.replace(/\^/g, "**");
+      expr = expr.replace(/\bPI\b/g, "Math.PI");
+      expr = expr.replace(/\bE\b/g, "Math.E");
+      expr = expr.replace(/sin\(([^)]+)\)/g, (_, x) => `Math.sin(toRadians(${x}))`);
+      expr = expr.replace(/cos\(([^)]+)\)/g, (_, x) => `Math.cos(toRadians(${x}))`);
+      expr = expr.replace(/tan\(([^)]+)\)/g, (_, x) => `Math.tan(toRadians(${x}))`);
+      expr = expr.replace(/log\(([^)]+)\)/g, (_, x) => `Math.log10(${x})`);
+      expr = expr.replace(/ln\(([^)]+)\)/g, (_, x) => `Math.log(${x})`);
+      expr = expr.replace(/sqrt\(([^)]+)\)/g, (_, x) => `Math.sqrt(${x})`);
+      return Function("toRadians", `return (${expr})`)(toRadians);
+    }
+
+    function formatResult(value) {
+      if (!Number.isFinite(value)) {
+        return "Error";
+      }
+      const text = Number(value.toFixed(10)).toString();
+      return text;
+    }
+
+    function render() {
+      exprEl.textContent = input || "0";
+      resultEl.textContent = formatResult(ans);
+      modeBtn.textContent = mode;
+    }
+
+    function calculate() {
+      try {
+        const value = evaluateExpression(input || "0");
+        ans = value;
+        render();
+      } catch {
+        resultEl.textContent = "Error";
+      }
+    }
+
+    function appendValue(value) {
+      input += value;
+      exprEl.textContent = input;
+    }
+
+    pad.addEventListener("click", (event) => {
+      const target = event.target.closest("button");
+      if (!target) return;
+
+      const value = target.dataset.value;
+      const fn = target.dataset.fn;
+      const action = target.dataset.action;
+
+      if (value) {
+        appendValue(value);
+        return;
+      }
+
+      if (fn) {
+        appendValue(`${fn}(`);
+        return;
+      }
+
+      if (action === "clear") {
+        input = "";
+        ans = 0;
+        render();
+        return;
+      }
+
+      if (action === "delete") {
+        input = input.slice(0, -1);
+        exprEl.textContent = input || "0";
+        return;
+      }
+
+      if (action === "const") {
+        appendValue(target.dataset.value === "PI" ? "PI" : "E");
+        return;
+      }
+
+      if (action === "ans") {
+        appendValue(String(formatResult(ans)));
+        return;
+      }
+
+      if (action === "calc") {
+        calculate();
+      }
+    });
+
+    modeBtn.addEventListener("click", () => {
+      mode = mode === "DEG" ? "RAD" : "DEG";
+      modeBtn.textContent = mode;
+      calculate();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key;
+      if (/^[0-9.+\-*/()%]$/.test(key)) {
+        appendValue(key);
+      } else if (key === "Enter") {
+        event.preventDefault();
+        calculate();
+      } else if (key === "Backspace") {
+        input = input.slice(0, -1);
+        exprEl.textContent = input || "0";
+      } else if (key === "Escape") {
+        input = "";
+        ans = 0;
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
