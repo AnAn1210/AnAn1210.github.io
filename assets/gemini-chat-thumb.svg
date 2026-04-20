@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="Gemini 問答小工具縮圖">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f2e5"/>
+      <stop offset="1" stop-color="#d9efe4"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d96a36"/>
+      <stop offset="1" stop-color="#be4f22"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg)"/>
+  <rect x="66" y="62" width="828" height="416" rx="34" fill="#fffdf8" stroke="#e8dcc7" stroke-width="4"/>
+  <rect x="66" y="62" width="828" height="96" rx="34" fill="#fff5e8"/>
+  <text x="114" y="122" font-family="Noto Sans TC, sans-serif" font-size="40" font-weight="700" fill="#2d3f3a">Gemini 問答小工具</text>
+  <rect x="114" y="198" width="734" height="72" rx="14" fill="#fffcf5" stroke="#ddcfb7" stroke-width="3"/>
+  <rect x="114" y="292" width="734" height="132" rx="14" fill="#f8fbf6" stroke="#d9dfd3" stroke-width="3"/>
+  <rect x="646" y="198" width="202" height="72" rx="14" fill="url(#bar)"/>
+  <text x="691" y="243" font-family="Noto Sans TC, sans-serif" font-size="30" font-weight="700" fill="#ffffff">送出訊息</text>
+  <text x="124" y="246" font-family="Noto Sans TC, sans-serif" font-size="28" fill="#6f786f">輸入問題...</text>
+  <text x="124" y="360" font-family="Noto Sans TC, sans-serif" font-size="28" fill="#4f625a">顯示回覆</text>
+</svg>

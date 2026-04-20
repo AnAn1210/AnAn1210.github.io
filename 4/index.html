@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gemini Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090b10;
+      --panel: #11151d;
+      --panel-2: #171c26;
+      --line: #232b39;
+      --text: #eceef4;
+      --muted: #9ea7ba;
+      --chip: #1a202d;
+      --accent: #9ad0ff;
+      --accent-2: #70b7f8;
+      --ok: #80e6a3;
+      --warn: #ffd37b;
+      --danger: #ff9696;
+      --shadow: rgba(0, 0, 0, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans TC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(58vw 40vw at 10% -5%, rgba(99, 120, 255, 0.16), transparent 60%),
+        radial-gradient(45vw 36vw at 100% 0%, rgba(90, 196, 255, 0.14), transparent 58%),
+        linear-gradient(180deg, #0a0d13, #07080c);
+      padding: clamp(16px, 2.8vw, 28px);
+    }
+
+    .wrap {
+      width: min(1220px, 100%);
+      margin: 0 auto;
+    }
+
+    .top {
+      animation: fade-up 0.45s ease both;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(2rem, 4.6vw, 3.5rem);
+      letter-spacing: 0.01em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 600;
+    }
+
+    .chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: var(--chip);
+      color: #d6dcef;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .layout {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
+      animation: fade-up 0.62s ease both;
+      animation-delay: 0.08s;
+    }
+
+    .side,
+    .main {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(170deg, rgba(22, 27, 37, 0.94), rgba(12, 16, 24, 0.94));
+      box-shadow: 0 18px 34px var(--shadow);
+      backdrop-filter: blur(2px);
+    }
+
+    .side {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .side-section {
+      border: 1px solid #20293a;
+      border-radius: 14px;
+      background: rgba(15, 20, 29, 0.58);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-family: "Sora", sans-serif;
+    }
+
+    .card-desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 0.95rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #eff2ff;
+    }
+
+    input,
+    textarea,
+    .answer {
+      width: 100%;
+      border: 1px solid #2a3446;
+      border-radius: 12px;
+      background: #0e131c;
+      color: var(--text);
+      font: inherit;
+    }
+
+    input,
+    textarea {
+      padding: 11px 12px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #6f7a90;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(112, 183, 248, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 98px;
+      line-height: 1.6;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, #7dc5ff, #56aef5);
+      color: #021327;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.1s ease, filter 0.2s ease;
+    }
+
+    button:hover {
+      filter: brightness(1.06);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.3);
+      opacity: 0.7;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .ghost-btn {
+      background: #1a2231;
+      color: #d7def1;
+      border: 1px solid #2b3548;
+      font-weight: 800;
+    }
+
+    .ghost-btn:hover {
+      filter: brightness(1.12);
+    }
+
+    .model-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px dashed #2d3648;
+      background: rgba(13, 17, 24, 0.6);
+    }
+
+    .status {
+      min-height: 1.2em;
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .status.ok {
+      color: var(--ok);
+    }
+
+    .status.warn {
+      color: var(--warn);
+    }
+
+    .status.danger {
+      color: var(--danger);
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border-radius: 999px;
+      border: 1px solid #29344a;
+      background: #121926;
+      color: #c9d5f2;
+      font-size: 0.84rem;
+      font-weight: 800;
+      padding: 6px 10px;
+    }
+
+    .main {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .main-title {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: clamp(1.45rem, 3.2vw, 2.1rem);
+    }
+
+    .key-pill {
+      font-size: 0.85rem;
+      color: #cfd6eb;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #2b3344;
+      background: #111721;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .answer {
+      min-height: 410px;
+      padding: 14px;
+      background:
+        radial-gradient(circle at 20% -20%, rgba(124, 175, 255, 0.09), transparent 44%),
+        #0f141d;
+      white-space: pre-wrap;
+      line-height: 1.72;
+      overflow: auto;
+      border-radius: 16px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .hint {
+      color: #95a2bf;
+      font-size: 0.88rem;
+    }
+
+    .designer {
+      color: #8ca1c6;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .recent-title {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: 1rem;
+    }
+
+    .recent-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #9aa8c5;
+      line-height: 1.8;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .answer {
+        min-height: 330px;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .input-row button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="top">
+      <h1>Gemini Chat</h1>
+      <p class="subtitle">串接 Google Gemini API，提供可直接提問的對話介面，並保留乾淨直覺的操作流程。</p>
+      <div class="chips" aria-hidden="true">
+        <span class="chip">AI 對話</span>
+        <span class="chip">API 整合</span>
+        <span class="chip">介面設計</span>
+      </div>
+    </section>
+
+    <section class="layout" aria-label="Gemini 對話區">
+      <aside class="side">
+        <h2 class="card-title">連線設定</h2>
+        <p class="card-desc">固定使用 Gemini 2.5 Flash。先貼上 API Key，再輸入問題送出即可。</p>
+
+        <div class="field">
+          <label for="apiKey">Gemini API Key</label>
+          <input id="apiKey" type="password" placeholder="貼上你的 Gemini API Key" autocomplete="off" spellcheck="false" />
+        </div>
+
+        <div class="model-note">模型：gemini-2.5-flash（固定）</div>
+
+        <div class="btn-row">
+          <button id="applyBtn" class="ghost-btn" type="button">套用設定</button>
+          <button id="clearBtn" class="ghost-btn" type="button">清除對話</button>
+        </div>
+
+        <span class="mode-pill">示範模式：關</span>
+        <div id="status" class="status" aria-live="polite"></div>
+
+        <section class="side-section" aria-label="最近提問">
+          <h3 class="recent-title">最近提問</h3>
+          <ul id="recentList" class="recent-list">
+            <li>目前還沒有提問紀錄。</li>
+          </ul>
+        </section>
+      </aside>
+
+      <section class="main">
+        <div class="head-row">
+          <h2 class="main-title">AI 回應視窗（設計者 安安）</h2>
+          <span id="keyState" class="key-pill">尚未設定 API Key</span>
+        </div>
+
+        <div id="answer" class="answer" role="status" aria-live="polite">已預設使用 Gemini 2.5 Flash。先貼上 API Key，再輸入問題即可開始。</div>
+
+        <div class="input-row">
+          <div class="field">
+            <label for="question">輸入問題</label>
+            <textarea id="question" placeholder="輸入你的問題，按 Enter 送出；Shift + Enter 換行。"></textarea>
+          </div>
+          <button id="sendBtn" type="button">送出訊息</button>
+        </div>
+
+        <div class="hint">提醒：API Key 僅在目前頁面使用，不會寫入檔案。</div>
+        <div class="designer">設計者：安安</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const MODEL_NAME = "gemini-2.5-flash";
+    const MAX_RETRIES = 5;
+
+    const apiKeyInput = document.getElementById("apiKey");
+    const questionInput = document.getElementById("question");
+    const sendBtn = document.getElementById("sendBtn");
+    const applyBtn = document.getElementById("applyBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const statusText = document.getElementById("status");
+    const answerBox = document.getElementById("answer");
+    const keyState = document.getElementById("keyState");
+    const recentList = document.getElementById("recentList");
+
+    const recentQuestions = [];
+
+    function setStatus(text, type) {
+      statusText.textContent = text;
+      statusText.className = "status";
+      if (type) {
+        statusText.classList.add(type);
+      }
+    }
+
+    function updateKeyState() {
+      const hasKey = Boolean(apiKeyInput.value.trim());
+      keyState.textContent = hasKey ? "API Key 已設定" : "尚未設定 API Key";
+    }
+
+    function renderRecentQuestions() {
+      if (!recentQuestions.length) {
+        recentList.innerHTML = "<li>目前還沒有提問紀錄。</li>";
+        return;
+      }
+
+      recentList.innerHTML = recentQuestions
+        .slice(0, 4)
+        .map((text) => `<li>${text.replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</li>`)
+        .join("");
+    }
+
+    function extractText(data) {
+      const candidate = data && data.candidates && data.candidates[0];
+      const parts = candidate && candidate.content && candidate.content.parts;
+
+      if (!Array.isArray(parts)) {
+        return "";
+      }
+
+      return parts
+        .map((part) => (typeof part.text === "string" ? part.text : ""))
+        .join("\n")
+        .trim();
+    }
+
+    function wait(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
+    function classifyError(message, statusCode) {
+      const text = String(message || "").toLowerCase();
+      const isBusy =
+        statusCode === 429 ||
+        statusCode === 503 ||
+        text.includes("high demand") ||
+        text.includes("overloaded") ||
+        text.includes("temporarily unavailable") ||
+        text.includes("resource exhausted");
+
+      if (isBusy) {
+        return "模型目前流量較高，已自動重試仍失敗，請稍後再試。";
+      }
+      if (text.includes("api key not valid") || text.includes("permission denied") || statusCode === 401 || statusCode === 403) {
+        return "API Key 無效或沒有權限，請確認後再試。";
+      }
+      if (text.includes("quota") || text.includes("billing")) {
+        return "目前配額不足或計費未啟用，請檢查 Google AI Studio 設定。";
+      }
+      return message || "發生未知錯誤";
+    }
+
+    async function requestGemini(apiKey, question) {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const payload = {
+        contents: [
+          {
+            parts: [
+              {
+                text: question
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          maxOutputTokens: 256,
+          temperature: 0.7
+        }
+      };
+
+      for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        let data = null;
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
+
+        if (response.ok) {
+          return data;
+        }
+
+        const apiMessage = (data && data.error && data.error.message) || `HTTP ${response.status}`;
+        const isRetryable =
+          response.status === 429 ||
+          response.status === 503 ||
+          String(apiMessage).toLowerCase().includes("high demand") ||
+          String(apiMessage).toLowerCase().includes("overloaded") ||
+          String(apiMessage).toLowerCase().includes("resource exhausted");
+
+        if (isRetryable && attempt < MAX_RETRIES) {
+          const retryAfterHeader = response.headers.get("retry-after");
+          const retryAfterSeconds = Number(retryAfterHeader);
+          const backoffMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+            ? retryAfterSeconds * 1000
+            : Math.min(12000, 1000 * (2 ** attempt));
+
+          setStatus(`模型忙碌中，重試 ${attempt + 1}/${MAX_RETRIES}（約 ${Math.round(backoffMs / 1000)} 秒）...`, "warn");
+          await wait(backoffMs);
+          continue;
+        }
+
+        const error = new Error(apiMessage);
+        error.statusCode = response.status;
+        throw error;
+      }
+
+      throw new Error("Gemini API 發生錯誤");
+    }
+
+    async function askGemini() {
+      const apiKey = apiKeyInput.value.trim();
+      const question = questionInput.value.trim();
+
+      if (!apiKey) {
+        setStatus("請先輸入 API Key", "warn");
+        apiKeyInput.focus();
+        return;
+      }
+
+      if (!question) {
+        setStatus("請先輸入問題", "warn");
+        questionInput.focus();
+        return;
+      }
+
+      sendBtn.disabled = true;
+      setStatus("傳送中...", "ok");
+      answerBox.textContent = "正在等待回覆，請稍候...";
+
+      try {
+        const data = await requestGemini(apiKey, question);
+
+        const reply = extractText(data);
+        if (!reply) {
+          answerBox.textContent = "模型沒有傳回可顯示的文字，請再試一次。";
+          setStatus("完成，但沒有文字回覆", "warn");
+          return;
+        }
+
+        answerBox.textContent = reply;
+        recentQuestions.unshift(question.length > 30 ? `${question.slice(0, 30)}...` : question);
+        if (recentQuestions.length > 4) {
+          recentQuestions.length = 4;
+        }
+        renderRecentQuestions();
+        setStatus("已收到回覆", "ok");
+      } catch (error) {
+        const friendlyMessage = classifyError(error && error.message, error && error.statusCode);
+        answerBox.textContent = `發生錯誤：${friendlyMessage}`;
+        setStatus(friendlyMessage, "danger");
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    sendBtn.addEventListener("click", askGemini);
+    applyBtn.addEventListener("click", () => {
+      updateKeyState();
+      setStatus("設定已套用", "ok");
+    });
+    clearBtn.addEventListener("click", () => {
+      questionInput.value = "";
+      answerBox.textContent = "已預設使用 Gemini 2.5 Flash。先貼上 API Key，再輸入問題即可開始。";
+      recentQuestions.length = 0;
+      renderRecentQuestions();
+      setStatus("已清除對話", "ok");
+    });
+    apiKeyInput.addEventListener("input", updateKeyState);
+    questionInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        askGemini();
+      }
+    });
+
+    updateKeyState();
+    renderRecentQuestions();
+  </script>
+</body>
+</html>
