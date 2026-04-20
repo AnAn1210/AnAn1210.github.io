@@ -434,6 +434,12 @@
   <script>
     const MODEL_NAME = "gemini-2.5-flash";
     const MAX_RETRIES = 5;
+    const SYSTEM_INSTRUCTION = [
+      "你是嚴謹的繁體中文 AI 助理。",
+      "只回答使用者真正問的內容，不要自行延伸或猜測。",
+      "如果資訊不足或不確定，請直接說不知道，或先請使用者補充資訊。",
+      "答案要簡潔、正確、可驗證，避免空泛或看似合理但不確定的說法。"
+    ].join("\n");
 
     const apiKeyInput = document.getElementById("apiKey");
     const questionInput = document.getElementById("question");
@@ -517,8 +523,16 @@
     async function requestGemini(apiKey, question) {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${encodeURIComponent(apiKey)}`;
       const payload = {
+        systemInstruction: {
+          parts: [
+            {
+              text: SYSTEM_INSTRUCTION
+            }
+          ]
+        },
         contents: [
           {
+            role: "user",
             parts: [
               {
                 text: question
@@ -528,7 +542,9 @@
         ],
         generationConfig: {
           maxOutputTokens: 256,
-          temperature: 0.7
+          temperature: 0.2,
+          topP: 0.8,
+          topK: 20
         }
       };
 
