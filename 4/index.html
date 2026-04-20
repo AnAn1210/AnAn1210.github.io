@@ -441,6 +441,16 @@
       "答案要簡潔、正確、可驗證，避免空泛或看似合理但不確定的說法。"
     ].join("\n");
 
+    const todayLabel = new Intl.DateTimeFormat("zh-TW", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    }).format(new Date());
+    const dateContext = `目前日期是 ${todayLabel}。若使用者詢問今天星期幾，請依此日期回答。`;
+
+    const weekdayNames = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
     const apiKeyInput = document.getElementById("apiKey");
     const questionInput = document.getElementById("question");
     const sendBtn = document.getElementById("sendBtn");
@@ -498,6 +508,22 @@
       });
     }
 
+    function isDateQuestion(text) {
+      return /今天.*星期|星期幾|今天幾號|今天日期|現在日期/.test(text);
+    }
+
+    function answerDateQuestion(text) {
+      const now = new Date();
+      const weekday = weekdayNames[now.getDay()];
+      if (/星期幾/.test(text)) {
+        return `今天是${weekday}。`;
+      }
+      if (/幾號|日期/.test(text)) {
+        return `今天是${todayLabel}。`;
+      }
+      return `今天是${todayLabel}，也就是${weekday}。`;
+    }
+
     function classifyError(message, statusCode) {
       const text = String(message || "").toLowerCase();
       const isBusy =
@@ -526,7 +552,7 @@
         systemInstruction: {
           parts: [
             {
-              text: SYSTEM_INSTRUCTION
+              text: `${SYSTEM_INSTRUCTION}\n${dateContext}`
             }
           ]
         },
@@ -542,9 +568,9 @@
         ],
         generationConfig: {
           maxOutputTokens: 256,
-          temperature: 0.2,
-          topP: 0.8,
-          topK: 20
+          temperature: 0,
+          topP: 1,
+          topK: 1
         }
       };
 
@@ -617,6 +643,18 @@
       answerBox.textContent = "正在等待回覆，請稍候...";
 
       try {
+        if (isDateQuestion(question)) {
+          const localAnswer = answerDateQuestion(question);
+          answerBox.textContent = localAnswer;
+          setStatus("已收到回覆", "ok");
+          recentQuestions.unshift(question.length > 30 ? `${question.slice(0, 30)}...` : question);
+          if (recentQuestions.length > 4) {
+            recentQuestions.length = 4;
+          }
+          renderRecentQuestions();
+          return;
+        }
+
         const data = await requestGemini(apiKey, question);
 
         const reply = extractText(data);
