@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安安</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #d0d0d0;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            max-height: 700px;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #d0d0d0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-url {
+            color: #666;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        #topic {
+            display: none;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        #switchChannel {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #c0c0c0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        #switchChannel:hover {
+            background: #e0e0e0;
+            border-color: #1abc9c;
+        }
+
+        #switchChannel:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-btn {
+            padding: 10px 20px;
+            background: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .status-btn:hover {
+            background: #16a085;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.disconnected {
+            background: #ef4444;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f9f9f9;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #c0c0c0;
+            border-radius: 4px;
+        }
+
+        .messages::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            word-wrap: break-word;
+            font-size: 14px;
+            animation: slideIn 0.3s ease-out;
+            max-width: 70%;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            background: #1abc9c;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message-name {
+            font-size: 12px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .message.received {
+            background: #e0e0e0;
+            color: #333;
+            border: 1px solid #c0c0c0;
+            align-self: flex-start;
+        }
+
+        .message.system {
+            background: transparent;
+            color: #999;
+            align-self: center;
+            font-size: 12px;
+            text-align: center;
+            border: none;
+        }
+
+        .message-time {
+            font-size: 11px;
+            margin-top: 4px;
+            opacity: 0.6;
+        }
+
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid #d0d0d0;
+            display: flex;
+            gap: 10px;
+            background: #ffffff;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border: 1px solid #c0c0c0;
+            border-radius: 8px;
+            color: #333;
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+        }
+
+        #messageInput::placeholder {
+            color: #999;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #1abc9c;
+            box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+        }
+
+        #sendBtn {
+            padding: 12px 24px;
+            background: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        #sendBtn:hover {
+            background: #16a085;
+        }
+
+        #sendBtn:active {
+            transform: scale(0.98);
+        }
+
+        #sendBtn:disabled {
+            background: #4a4a4a;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .empty-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #999;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-url">https://ntfy.sh</div>
+            </div>
+            <input 
+                type="text" 
+                id="topic" 
+                value="drher" 
+                placeholder="輸入頻道名稱"
+                maxlength="64"
+            >
+            <div class="header-buttons">
+                <button id="switchChannel">drher</button>
+                <button class="status-btn">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">選暴/訂間</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="empty-state">未連線</div>
+        </div>
+
+        <div class="input-area">
+            <textarea 
+                id="messageInput" 
+                placeholder="輸入訊息後按 Enter 送出" 
+                rows="1"
+            ></textarea>
+            <button id="sendBtn">發送</button>
+        </div>
+    </div>
+
+    <script>
+        const NTFY_BASE_URL = 'https://ntfy.sh';
+        let currentTopic = 'drher';
+        let eventSource = null;
+        let userName = '安安';
+
+        const elements = {
+            topic: document.getElementById('topic'),
+            messageInput: document.getElementById('messageInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            messages: document.getElementById('messages'),
+            switchChannel: document.getElementById('switchChannel'),
+            statusDot: document.getElementById('statusDot'),
+            statusText: document.getElementById('statusText')
+        };
+
+        // 初始化
+        function init() {
+            connectToChannel(currentTopic);
+            setupEventListeners();
+        }
+
+        // 設置事件監聽
+        function setupEventListeners() {
+            elements.sendBtn.addEventListener('click', sendMessage);
+            elements.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            elements.switchChannel.addEventListener('click', switchChannel);
+            
+            // 自動調整文本框高度
+            elements.messageInput.addEventListener('input', () => {
+                elements.messageInput.style.height = 'auto';
+                elements.messageInput.style.height = Math.min(elements.messageInput.scrollHeight, 100) + 'px';
+            });
+        }
+
+        // 清空消息容器的初始提示
+        function clearEmptyState() {
+            if (elements.messages.querySelector('.empty-state')) {
+                elements.messages.innerHTML = '';
+            }
+        }
+
+        // 連接到頻道
+        function connectToChannel(topic) {
+            // 關閉舊連接
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            currentTopic = topic;
+            elements.topic.value = topic;
+            
+            clearEmptyState();
+            updateStatus(true);
+            addSystemMessage(`已連接到頻道: ${topic}`);
+
+            // 使用 EventSource 訂閱消息
+            const sseUrl = `${NTFY_BASE_URL}/${topic}/sse`;
+            eventSource = new EventSource(sseUrl);
+
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    // 避免顯示自己發送的消息（通過系統過濾）
+                    if (data.message && !data.message.startsWith('[已發送]')) {
+                        addReceivedMessage(data.message);
+                    }
+                } catch (e) {
+                    addReceivedMessage(event.data);
+                }
+            };
+
+            eventSource.onerror = () => {
+                updateStatus(false);
+                addSystemMessage('連接中斷，嘗試重新連接...');
+                setTimeout(() => connectToChannel(topic), 3000);
+            };
+        }
+
+        // 切換頻道
+        function switchChannel() {
+            const newTopic = elements.topic.value.trim();
+            if (!newTopic) {
+                alert('請輸入頻道名稱');
+                return;
+            }
+            if (newTopic === currentTopic) {
+                alert('已經在此頻道');
+                return;
+            }
+            elements.switchChannel.disabled = true;
+            connectToChannel(newTopic);
+            setTimeout(() => {
+                elements.switchChannel.disabled = false;
+            }, 300);
+        }
+
+        // 發送消息
+        async function sendMessage() {
+            const message = elements.messageInput.value.trim();
+            if (!message) return;
+
+            // 禁用發送按鈕
+            elements.sendBtn.disabled = true;
+
+            try {
+                // 發送到 ntfy.sh
+                const response = await fetch(`${NTFY_BASE_URL}/${currentTopic}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain; charset=utf-8'
+                    },
+                    body: message
+                });
+
+                if (response.ok) {
+                    addSentMessage(message);
+                    elements.messageInput.value = '';
+                    elements.messageInput.style.height = 'auto';
+                } else {
+                    addSystemMessage('發送失敗，請重試');
+                }
+            } catch (error) {
+                console.error('Failed to send message:', error);
+                addSystemMessage('網路錯誤，無法發送消息');
+            } finally {
+                elements.sendBtn.disabled = false;
+                elements.messageInput.focus();
+            }
+        }
+
+        // 添加已發送的消息
+        function addSentMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message sent';
+            const time = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+            messageEl.innerHTML = `
+                <div><span class="message-name">${escapeHtml(userName)}:</span>${escapeHtml(message)}</div>
+                <div class="message-time">${time}</div>
+            `;
+            elements.messages.appendChild(messageEl);
+            scrollToBottom();
+        }
+
+        // 添加接收的消息
+        function addReceivedMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message received';
+            const time = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+            messageEl.innerHTML = `
+                ${escapeHtml(message)}
+                <div class="message-time">${time}</div>
+            `;
+            elements.messages.appendChild(messageEl);
+            scrollToBottom();
+        }
+
+        // 添加系統消息
+        function addSystemMessage(message) {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message system';
+            messageEl.textContent = message;
+            elements.messages.appendChild(messageEl);
+            scrollToBottom();
+        }
+
+        // 更新連接狀態
+        function updateStatus(connected) {
+            if (connected) {
+                elements.statusDot.classList.remove('disconnected');
+                elements.statusText.textContent = '選暴/訂間';
+            } else {
+                elements.statusDot.classList.add('disconnected');
+                elements.statusText.textContent = '未連線';
+            }
+        }
+
+        // 滾動到底部
+        function scrollToBottom() {
+            elements.messages.scrollTop = elements.messages.scrollHeight;
+        }
+
+        // HTML 轉義
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 頁面卸載時關閉連接
+        window.addEventListener('beforeunload', () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+        });
+
+        // 啟動應用
+        init();
+    </script>
+</body>
+</html>
