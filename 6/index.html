@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>雲端記事本</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-1: #f7f1e3;
+      --bg-2: #ead8b8;
+      --panel: rgba(255, 252, 244, 0.86);
+      --panel-strong: #fffaf0;
+      --line: rgba(100, 74, 43, 0.12);
+      --ink: #2e241a;
+      --muted: #6b5c49;
+      --accent: #d07c3c;
+      --accent-dark: #ab5f28;
+      --shadow: 0 24px 60px rgba(92, 65, 35, 0.18);
+      --paper-shadow: 0 10px 30px rgba(92, 65, 35, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(255, 255, 255, 0.72), transparent 28%),
+        radial-gradient(circle at 85% 8%, rgba(255, 255, 255, 0.45), transparent 20%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      padding: clamp(14px, 3vw, 28px);
+    }
+
+    .page {
+      width: min(1040px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(255, 251, 242, 0.88));
+      border: 1px solid rgba(133, 94, 48, 0.12);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 3.4vw, 30px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -6% -22% auto;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(208, 124, 60, 0.2), transparent 64%);
+      pointer-events: none;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: 0.04em;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      max-width: 68ch;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1.02rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      align-items: center;
+    }
+
+    .chip,
+    .button {
+      border: 1px solid rgba(133, 94, 48, 0.16);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.75);
+      box-shadow: 0 6px 18px rgba(113, 78, 35, 0.08);
+    }
+
+    .button {
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .button:hover {
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 24px rgba(113, 78, 35, 0.14);
+    }
+
+    .button:active {
+      transform: translateY(1px);
+    }
+
+    .button.primary {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .button.primary:hover {
+      background: linear-gradient(180deg, #dc8b4d, #a95520);
+    }
+
+    .status {
+      margin-left: auto;
+      color: #7b674f;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .editor-shell {
+      position: relative;
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(117, 84, 39, 0.16);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: clamp(16px, 2.8vw, 24px);
+      display: grid;
+      gap: 16px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.22rem;
+    }
+
+    .card-title .dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffd2b0, #c96f2f 72%);
+      box-shadow: 0 0 0 5px rgba(208, 124, 60, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .paper {
+      position: relative;
+      min-height: 480px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fffdf7, #fffaf1);
+      box-shadow: var(--paper-shadow);
+      border: 1px solid rgba(121, 89, 53, 0.14);
+      overflow: hidden;
+    }
+
+    .paper::before {
+      content: "";
+      position: absolute;
+      inset: 44px 0 0;
+      background-image: linear-gradient(to bottom, transparent 0, transparent 34px, var(--line) 35px);
+      background-size: 100% 35px;
+      pointer-events: none;
+      opacity: 0.95;
+    }
+
+    .paper::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(211, 159, 104, 0.06), transparent 16%);
+      pointer-events: none;
+    }
+
+    .paper-toolbar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid rgba(121, 89, 53, 0.14);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 251, 244, 0.75));
+    }
+
+    .paper-toolbar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .paper-toolbar input {
+      width: min(280px, 100%);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(121, 89, 53, 0.16);
+      background: #fff;
+      font: inherit;
+      outline: none;
+    }
+
+    .paper-toolbar input:focus {
+      border-color: rgba(208, 124, 60, 0.6);
+      box-shadow: 0 0 0 3px rgba(208, 124, 60, 0.14);
+    }
+
+    .textarea-wrap {
+      position: relative;
+      z-index: 1;
+      padding: 14px 18px 18px;
+      min-height: 420px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 390px;
+      resize: vertical;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: var(--ink);
+      font: 600 1.08rem/1.95 "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      letter-spacing: 0.01em;
+      padding: 4px 2px 8px;
+      white-space: pre-wrap;
+    }
+
+    .footer-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+      padding: 0 4px;
+    }
+
+    .footer-bar strong {
+      color: var(--ink);
+    }
+
+    .saving {
+      color: var(--accent-dark);
+    }
+
+    .notice {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 244, 218, 0.92);
+      border: 1px solid rgba(208, 124, 60, 0.16);
+      color: #6c4120;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    @media (max-width: 720px) {
+      .status {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .paper-toolbar input {
+        width: 100%;
+      }
+
+      textarea {
+        min-height: 320px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1 class="title">雲端記事本</h1>
+      <p class="subtitle">透過 Google Apps Script 串接 Google Drive，直接在瀏覽器中讀取與儲存 <strong>文件.txt</strong>。按 <strong>Ctrl + S</strong> 或 <strong>⌘ + S</strong> 即可快速回存。</p>
+      <div class="toolbar">
+        <span class="chip">文字編輯</span>
+        <span class="chip">Google Drive</span>
+        <span class="chip">Apps Script</span>
+        <button class="button primary" id="saveBtn" type="button">立即回存</button>
+        <button class="button" id="reloadBtn" type="button">重新讀取</button>
+        <div class="status" id="status">尚未連線</div>
+      </div>
+    </section>
+
+    <section class="editor-shell">
+      <div class="card-header">
+        <h2 class="card-title"><span class="dot"></span> Cloud Notepad</h2>
+        <div class="meta">
+          <span id="fileName">文件.txt</span>
+          <span id="fileInfo">等待讀取</span>
+        </div>
+      </div>
+
+      <div class="notice" id="notice"></div>
+
+      <div class="paper">
+        <div class="paper-toolbar">
+          <label for="docTitle">文件名稱</label>
+          <input id="docTitle" type="text" value="文件.txt" readonly />
+          <span class="chip saving" id="shortcutHint">快捷鍵：Ctrl + S / ⌘ + S</span>
+        </div>
+        <div class="textarea-wrap">
+          <textarea id="editor" spellcheck="false" placeholder="正在載入內容..."></textarea>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <div>狀態：<strong id="saveState">初始化中</strong></div>
+        <div>本機預覽模式會以 localStorage 模擬，部署到 Apps Script 後會改為 Google Drive。</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const saveBtn = document.getElementById('saveBtn');
+    const reloadBtn = document.getElementById('reloadBtn');
+    const statusEl = document.getElementById('status');
+    const saveStateEl = document.getElementById('saveState');
+    const noticeEl = document.getElementById('notice');
+    const fileNameEl = document.getElementById('fileName');
+    const fileInfoEl = document.getElementById('fileInfo');
+
+    const localStorageKey = 'cloud-notepad-demo-document';
+    let activeContent = '';
+    let isDirty = false;
+    let isSaving = false;
+    let isLoaded = false;
+
+    function hasAppsScriptBridge() {
+      return typeof google !== 'undefined' && google.script && google.script.run;
+    }
+
+    function setStatus(text, variant) {
+      statusEl.textContent = text;
+      saveStateEl.textContent = text;
+      saveStateEl.className = variant === 'saving' ? 'saving' : '';
+    }
+
+    function showNotice(text) {
+      noticeEl.textContent = text;
+      noticeEl.classList.add('show');
+    }
+
+    function hideNotice() {
+      noticeEl.classList.remove('show');
+      noticeEl.textContent = '';
+    }
+
+    function setMetadata(payload) {
+      const lastUpdated = payload.lastUpdated ? new Date(payload.lastUpdated).toLocaleString('zh-TW') : '未知';
+      fileNameEl.textContent = payload.fileName || '文件.txt';
+      fileInfoEl.textContent = `最後更新：${lastUpdated}`;
+      document.title = `${payload.fileName || '雲端記事本'} - 雲端記事本`;
+    }
+
+    function loadFromLocal() {
+      const saved = localStorage.getItem(localStorageKey) || '今天的待辦事項：\n- 完成雲端記事本\n- 測試 Ctrl + S 快速回存';
+      const payload = {
+        fileName: '文件.txt',
+        lastUpdated: new Date().toISOString(),
+        content: saved,
+      };
+      activeContent = payload.content;
+      editor.value = payload.content;
+      setMetadata(payload);
+      fileInfoEl.textContent += '（本機預覽）';
+      setStatus('本機預覽已載入');
+      isLoaded = true;
+      isDirty = false;
+      hideNotice();
+    }
+
+    function loadFromAppsScript() {
+      setStatus('讀取中...');
+      google.script.run
+        .withSuccessHandler((payload) => {
+          activeContent = payload.content || '';
+          editor.value = activeContent;
+          setMetadata(payload);
+          setStatus('已連線');
+          isLoaded = true;
+          isDirty = false;
+          hideNotice();
+        })
+        .withFailureHandler((error) => {
+          console.error(error);
+          showNotice('無法從 Google Drive 讀取內容，已切換到本機預覽。若要正式使用，請部署為 Apps Script Web App。');
+          loadFromLocal();
+        })
+        .getDocumentData();
+    }
+
+    function loadDocument() {
+      if (hasAppsScriptBridge()) {
+        loadFromAppsScript();
+      } else {
+        showNotice('目前是本機預覽模式。若要連接 Google Drive，請將此頁部署為 Google Apps Script Web App。');
+        loadFromLocal();
+      }
+    }
+
+    function persistLocal(content) {
+      localStorage.setItem(localStorageKey, content);
+      return Promise.resolve({
+        fileName: '文件.txt',
+        lastUpdated: new Date().toISOString(),
+        content,
+      });
+    }
+
+    function persistAppsScript(content) {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(reject)
+          .saveDocument(content);
+      });
+    }
+
+    async function saveDocument() {
+      if (!isLoaded || isSaving) {
+        return;
+      }
+
+      isSaving = true;
+      setStatus('儲存中...', 'saving');
+      hideNotice();
+
+      const content = editor.value;
+
+      try {
+        const payload = hasAppsScriptBridge() ? await persistAppsScript(content) : await persistLocal(content);
+        activeContent = content;
+        isDirty = false;
+        setMetadata(payload);
+        setStatus('已回存');
+        showNotice('內容已成功回存到文件.txt。');
+      } catch (error) {
+        console.error(error);
+        setStatus('儲存失敗');
+        showNotice('儲存失敗，請稍後再試。');
+      } finally {
+        isSaving = false;
+      }
+    }
+
+    editor.addEventListener('input', () => {
+      isDirty = editor.value !== activeContent;
+      if (isDirty) {
+        setStatus('未儲存的變更');
+      } else if (isLoaded) {
+        setStatus('已連線');
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      const isSaveShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's';
+      if (isSaveShortcut) {
+        event.preventDefault();
+        saveDocument();
+      }
+    });
+
+    saveBtn.addEventListener('click', saveDocument);
+    reloadBtn.addEventListener('click', loadDocument);
+
+    window.addEventListener('beforeunload', (event) => {
+      if (isDirty) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
+
+    loadDocument();
+  </script>
+</body>
+</html>
