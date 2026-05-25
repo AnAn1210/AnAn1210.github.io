@@ -85,17 +85,17 @@ function getHtml_() {
   <style>
     :root {
       color-scheme: light;
-      --bg-a: #f6efe4;
-      --bg-b: #e4d1b0;
-      --panel: rgba(255, 251, 244, 0.9);
-      --paper: #fffdf8;
-      --ink: #2d241c;
-      --muted: #6c5b48;
-      --line: rgba(121, 89, 53, 0.14);
-      --accent: #ca7434;
-      --accent-strong: #a85b22;
-      --shadow: 0 26px 70px rgba(80, 58, 31, 0.18);
-      --paper-shadow: 0 12px 34px rgba(80, 58, 31, 0.12);
+      --bg-a: #f7f7f7;
+      --bg-b: #d9d9d9;
+      --panel: rgba(255, 255, 255, 0.92);
+      --paper: #ffffff;
+      --ink: #111111;
+      --muted: #666666;
+      --line: rgba(17, 17, 17, 0.1);
+      --accent: #111111;
+      --accent-strong: #000000;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.14);
+      --paper-shadow: 0 12px 34px rgba(0, 0, 0, 0.08);
     }
 
     * { box-sizing: border-box; }
@@ -106,8 +106,8 @@ function getHtml_() {
       color: var(--ink);
       font-family: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.7), transparent 28%),
-        radial-gradient(circle at top right, rgba(255,255,255,0.4), transparent 22%),
+        radial-gradient(circle at top left, rgba(255,255,255,0.95), transparent 30%),
+        radial-gradient(circle at top right, rgba(255,255,255,0.6), transparent 20%),
         linear-gradient(150deg, var(--bg-a), var(--bg-b));
       padding: clamp(14px, 3vw, 28px);
     }
@@ -142,7 +142,7 @@ function getHtml_() {
       width: 240px;
       height: 240px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(202, 116, 52, 0.18), transparent 66%);
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.12), transparent 66%);
       pointer-events: none;
     }
 
@@ -168,16 +168,15 @@ function getHtml_() {
       align-items: center;
     }
 
-    .chip,
     .button {
       border-radius: 999px;
-      border: 1px solid rgba(121, 89, 53, 0.16);
-      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(17, 17, 17, 0.14);
+      background: rgba(255, 255, 255, 0.92);
       color: var(--ink);
       padding: 10px 16px;
       font: inherit;
       font-weight: 700;
-      box-shadow: 0 6px 18px rgba(100, 72, 38, 0.08);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     }
 
     .button {
@@ -186,20 +185,20 @@ function getHtml_() {
     }
 
     .button:hover {
-      box-shadow: 0 10px 26px rgba(100, 72, 38, 0.14);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
       background: rgba(255, 255, 255, 0.95);
     }
 
     .button:active { transform: translateY(1px); }
 
     .button.primary {
-      background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+      background: linear-gradient(180deg, #111111, #000000);
       color: #fff;
       border-color: transparent;
     }
 
     .button.primary:hover {
-      background: linear-gradient(180deg, #d88444, #9f4d1c);
+      background: linear-gradient(180deg, #333333, #111111);
     }
 
     .status {
@@ -234,8 +233,8 @@ function getHtml_() {
       width: 13px;
       height: 13px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffd7b6, #c96a28 70%);
-      box-shadow: 0 0 0 5px rgba(202, 116, 52, 0.12);
+      background: radial-gradient(circle at 30% 30%, #ffffff, #444444 70%);
+      box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.08);
     }
 
     .meta {
@@ -250,9 +249,9 @@ function getHtml_() {
       display: none;
       padding: 12px 14px;
       border-radius: 16px;
-      background: rgba(255, 242, 217, 0.94);
-      border: 1px solid rgba(202, 116, 52, 0.18);
-      color: #6b4120;
+      background: rgba(248, 248, 248, 0.96);
+      border: 1px solid rgba(17, 17, 17, 0.12);
+      color: #222222;
       font-weight: 700;
       line-height: 1.6;
     }
@@ -263,8 +262,8 @@ function getHtml_() {
       position: relative;
       border-radius: 24px;
       overflow: hidden;
-      border: 1px solid rgba(121, 89, 53, 0.14);
-      background: linear-gradient(180deg, var(--paper), #fff8ee);
+      border: 1px solid rgba(17, 17, 17, 0.12);
+      background: linear-gradient(180deg, var(--paper), #fcfcfc);
       box-shadow: var(--paper-shadow);
       min-height: 520px;
     }
@@ -287,8 +286,8 @@ function getHtml_() {
       gap: 10px;
       align-items: center;
       padding: 16px 18px 12px;
-      border-bottom: 1px solid rgba(121, 89, 53, 0.14);
-      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,251,244,0.76));
+      border-bottom: 1px solid rgba(17, 17, 17, 0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,248,248,0.9));
     }
 
     .paperbar label {
@@ -303,7 +302,7 @@ function getHtml_() {
       width: min(280px, 100%);
       padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid rgba(121, 89, 53, 0.16);
+      border: 1px solid rgba(17, 17, 17, 0.14);
       font: inherit;
       background: #fff;
       color: var(--ink);
@@ -311,8 +310,8 @@ function getHtml_() {
     }
 
     .paperbar input:focus {
-      border-color: rgba(202, 116, 52, 0.6);
-      box-shadow: 0 0 0 3px rgba(202, 116, 52, 0.14);
+      border-color: rgba(17, 17, 17, 0.55);
+      box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
     }
 
     .editor-wrap {
@@ -360,10 +359,7 @@ function getHtml_() {
       <h1>雲端記事本</h1>
       <p class="sub">這是一個單一 Google Apps Script 檔案版記事本。開啟時會自動讀取指定雲端資料夾中的 <strong>記事本.txt</strong>，若不存在就建立；按下 <strong>Save</strong> 會直接寫回同一個檔案。</p>
       <div class="toolbar">
-        <span class="chip">Google Drive 直讀直寫</span>
-        <span class="chip">單檔 GAS</span>
         <button class="button primary" id="saveBtn" type="button">Save</button>
-        <button class="button" id="reloadBtn" type="button">Reload</button>
         <div class="status" id="status">初始化中</div>
       </div>
     </section>
@@ -400,17 +396,18 @@ function getHtml_() {
   <script>
     const editor = document.getElementById('editor');
     const saveBtn = document.getElementById('saveBtn');
-    const reloadBtn = document.getElementById('reloadBtn');
     const statusEl = document.getElementById('status');
     const saveStateEl = document.getElementById('saveState');
     const noticeEl = document.getElementById('notice');
     const fileNameEl = document.getElementById('fileName');
     const fileInfoEl = document.getElementById('fileInfo');
+    const autosaveDelayMs = 900;
 
     let activeContent = '';
     let isDirty = false;
     let isSaving = false;
     let isLoaded = false;
+    let autosaveTimer = null;
 
     function setStatus(text, mode) {
       statusEl.textContent = text;
@@ -475,6 +472,11 @@ function getHtml_() {
         return;
       }
 
+      if (autosaveTimer) {
+        clearTimeout(autosaveTimer);
+        autosaveTimer = null;
+      }
+
       isSaving = true;
       setStatus('儲存中...', 'saving');
       hideNotice();
@@ -500,10 +502,26 @@ function getHtml_() {
         .saveDocument(content);
     }
 
+    function scheduleAutosave() {
+      if (!isLoaded || !isDirty) {
+        return;
+      }
+
+      if (autosaveTimer) {
+        clearTimeout(autosaveTimer);
+      }
+
+      autosaveTimer = setTimeout(() => {
+        autosaveTimer = null;
+        saveDocument();
+      }, autosaveDelayMs);
+    }
+
     editor.addEventListener('input', () => {
       isDirty = editor.value !== activeContent;
       if (isDirty) {
         setStatus('未儲存變更');
+        scheduleAutosave();
       } else if (isLoaded) {
         setStatus('已連線');
       }
@@ -517,10 +535,14 @@ function getHtml_() {
       }
     });
 
-    saveBtn.addEventListener('click', saveDocument);
-    reloadBtn.addEventListener('click', loadDocument);
+  saveBtn.addEventListener('click', saveDocument);
 
     window.addEventListener('beforeunload', (event) => {
+      if (autosaveTimer) {
+        clearTimeout(autosaveTimer);
+        autosaveTimer = null;
+      }
+
       if (isDirty) {
         event.preventDefault();
         event.returnValue = '';
