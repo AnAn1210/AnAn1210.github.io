@@ -84,17 +84,17 @@ function getHtml_() {
   <title>雲端記事本</title>
   <style>
     :root {
-      --bg: #ead8f7;
-      --bg2: #d7b9ef;
-      --card: rgba(255, 255, 255, 0.95);
-      --card-2: rgba(248, 242, 255, 0.98);
-      --ink: #43304f;
-      --muted: #8d74a0;
-      --line: rgba(114, 74, 150, 0.14);
-      --purple: #a75fd3;
-      --purple-2: #c58cf0;
-      --shadow: 0 28px 80px rgba(128, 74, 171, 0.16);
-      --shadow-soft: 0 10px 28px rgba(145, 86, 196, 0.08);
+      --bg: #f2f2f2;
+      --bg2: #dedede;
+      --card: rgba(255, 255, 255, 0.96);
+      --card-2: rgba(250, 250, 250, 0.98);
+      --ink: #141414;
+      --muted: #666666;
+      --line: rgba(0, 0, 0, 0.12);
+      --accent: #202020;
+      --accent-2: #5b5b5b;
+      --shadow: 0 28px 80px rgba(0, 0, 0, 0.14);
+      --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.08);
     }
 
     * { box-sizing: border-box; }
@@ -118,7 +118,7 @@ function getHtml_() {
       overflow: hidden;
       background: var(--card);
       box-shadow: var(--shadow);
-      border: 1px solid rgba(122, 72, 166, 0.10);
+      border: 1px solid rgba(0, 0, 0, 0.10);
     }
 
     .header {
@@ -127,7 +127,7 @@ function getHtml_() {
       justify-content: space-between;
       gap: 14px;
       align-items: center;
-      background: linear-gradient(180deg, #a95ad6 0%, #9a56c4 100%);
+      background: linear-gradient(180deg, #1f1f1f 0%, #3a3a3a 100%);
       color: #fff;
     }
 
@@ -143,7 +143,7 @@ function getHtml_() {
       height: 18px;
       margin-top: 4px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff, #ead8f7 48%, #c98bea 76%, #8f4dbb 100%);
+      background: radial-gradient(circle at 35% 35%, #fff, #d9d9d9 48%, #9a9a9a 76%, #3a3a3a 100%);
       box-shadow: 0 0 0 4px rgba(255,255,255,0.14);
       flex: 0 0 auto;
     }
@@ -207,7 +207,7 @@ function getHtml_() {
       align-items: center;
       gap: 10px;
       min-width: 0;
-      color: var(--purple);
+      color: var(--accent);
       font-weight: 800;
     }
 
@@ -217,8 +217,8 @@ function getHtml_() {
       border-radius: 8px;
       display: grid;
       place-items: center;
-      background: linear-gradient(180deg, #efe4fb, #dfc2f6);
-      color: #8a51b5;
+      background: linear-gradient(180deg, #efefef, #dadada);
+      color: #2a2a2a;
       font-size: 0.92rem;
       flex: 0 0 auto;
     }
@@ -231,7 +231,7 @@ function getHtml_() {
 
     .editor-shell {
       margin-top: 12px;
-      border: 1px solid rgba(122, 72, 166, 0.10);
+      border: 1px solid rgba(0, 0, 0, 0.10);
       border-radius: 16px;
       overflow: hidden;
       background: #fff;
@@ -251,7 +251,7 @@ function getHtml_() {
       white-space: pre-wrap;
     }
 
-    textarea::placeholder { color: #b59dc7; }
+    textarea::placeholder { color: #9a9a9a; }
 
     .footer {
       margin-top: 14px;
@@ -277,27 +277,27 @@ function getHtml_() {
     }
 
     button {
-      border: 1px solid rgba(122, 72, 166, 0.14);
+      border: 1px solid rgba(0, 0, 0, 0.14);
       border-radius: 14px;
       padding: 10px 16px;
       font: inherit;
       font-weight: 800;
       cursor: pointer;
       background: #fff;
-      color: #6a4e7e;
-      box-shadow: 0 8px 18px rgba(150, 88, 197, 0.08);
+      color: #2a2a2a;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
       transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
 
     button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(150, 88, 197, 0.12);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
     }
 
     button.primary {
       border-color: transparent;
       color: #fff;
-      background: linear-gradient(180deg, var(--purple-2), var(--purple));
+      background: linear-gradient(180deg, #4c4c4c, #1f1f1f);
     }
 
     .meta {
@@ -312,9 +312,9 @@ function getHtml_() {
       margin-top: 10px;
       padding: 10px 12px;
       border-radius: 12px;
-      background: #f7f0fd;
-      border: 1px solid rgba(122, 72, 166, 0.12);
-      color: #735486;
+      background: #f1f1f1;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      color: #454545;
       font-size: 0.9rem;
     }
 
