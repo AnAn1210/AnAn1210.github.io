@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>雲端記事本 - 作品 06</title>
+  <style>
+    :root {
+      --bg-a: #f8f8f8;
+      --bg-b: #dedede;
+      --panel: rgba(255, 255, 255, 0.94);
+      --ink: #111111;
+      --muted: #666666;
+      --line: rgba(17, 17, 17, 0.12);
+      --accent: #111111;
+      --shadow: 0 26px 70px rgba(0, 0, 0, 0.14);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.95), transparent 30%),
+        radial-gradient(circle at top right, rgba(255,255,255,0.7), transparent 22%),
+        linear-gradient(150deg, var(--bg-a), var(--bg-b));
+      padding: clamp(14px, 3vw, 30px);
+    }
+
+    .shell {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero,
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero {
+      padding: clamp(20px, 4vw, 34px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      bottom: -72px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,0,0,0.1), transparent 66%);
+      pointer-events: none;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 14px 0 0;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: 0.03em;
+    }
+
+    .sub {
+      margin: 12px 0 0;
+      max-width: 68ch;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1.02rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+      align-items: center;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 800;
+      text-decoration: none;
+      color: var(--ink);
+      background: rgba(255,255,255,0.94);
+      transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.1);
+    }
+
+    .button.primary {
+      background: linear-gradient(180deg, #111, #000);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 16px;
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 1.18rem;
+      font-weight: 900;
+    }
+
+    .desc {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .list {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--ink);
+      line-height: 1.9;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .preview {
+      min-height: 180px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #f8f8f8);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+    }
+
+    .preview strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink);
+      font-size: 1.15rem;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <span class="kicker">作品 06 · 黑白版雲端記事本</span>
+      <h1>雲端記事本</h1>
+      <p class="sub">這個作品是以單一 Google Apps Script 檔案完成的雲端記事本，會直接讀寫指定 Google Drive 資料夾中的 <strong>記事本.txt</strong>。</p>
+      <div class="actions">
+        <a class="button primary" href="https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYMENT_ID/exec" target="_blank" rel="noopener">開啟記事本</a>
+        <a class="button" href="README.md" target="_blank" rel="noopener">查看說明</a>
+        <a class="button" href="../index.html">回作品集</a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2 class="title">作品重點</h2>
+        <p class="desc">介面本身保留編輯區、Save 按鈕與狀態顯示，並以黑白灰階視覺呈現，適合放入作品集展示。</p>
+        <ul class="list">
+          <li>單檔 GAS，不依賴前端 index.html</li>
+          <li>直接透過 DriveApp 操作雲端資料夾</li>
+          <li>自動建立或開啟 <strong>記事本.txt</strong></li>
+        </ul>
+        <p class="note">若你已經部署好 Web App，只要把上方按鈕中的網址替換成實際發佈網址即可直接開啟。</p>
+      </article>
+
+      <aside class="card">
+        <div class="preview">
+          雲端記事本
+          <strong>Google Drive 記事本作品</strong>
+        </div>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
