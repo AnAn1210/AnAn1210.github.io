@@ -84,18 +84,17 @@ function getHtml_() {
   <title>雲端記事本</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg-a: #f7f7f7;
-      --bg-b: #d9d9d9;
-      --panel: rgba(255, 255, 255, 0.92);
-      --paper: #ffffff;
-      --ink: #111111;
-      --muted: #666666;
-      --line: rgba(17, 17, 17, 0.1);
-      --accent: #111111;
-      --accent-strong: #000000;
-      --shadow: 0 26px 70px rgba(0, 0, 0, 0.14);
-      --paper-shadow: 0 12px 34px rgba(0, 0, 0, 0.08);
+      --bg: #ead8f7;
+      --bg2: #d7b9ef;
+      --card: rgba(255, 255, 255, 0.95);
+      --card-2: rgba(248, 242, 255, 0.98);
+      --ink: #43304f;
+      --muted: #8d74a0;
+      --line: rgba(114, 74, 150, 0.14);
+      --purple: #a75fd3;
+      --purple-2: #c58cf0;
+      --shadow: 0 28px 80px rgba(128, 74, 171, 0.16);
+      --shadow-soft: 0 10px 28px rgba(145, 86, 196, 0.08);
     }
 
     * { box-sizing: border-box; }
@@ -103,304 +102,293 @@ function getHtml_() {
     body {
       margin: 0;
       min-height: 100vh;
-      color: var(--ink);
       font-family: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.95), transparent 30%),
-        radial-gradient(circle at top right, rgba(255,255,255,0.6), transparent 20%),
-        linear-gradient(150deg, var(--bg-a), var(--bg-b));
-      padding: clamp(14px, 3vw, 28px);
+        radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.45), transparent 32%),
+        linear-gradient(145deg, var(--bg), var(--bg2));
+      padding: 22px 18px 26px;
     }
 
-    .shell {
-      width: min(1080px, 100%);
+    .app {
+      width: min(820px, 100%);
       margin: 0 auto;
-      display: grid;
-      gap: 18px;
-    }
-
-    .hero,
-    .panel {
-      border: 1px solid rgba(121, 89, 53, 0.12);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      background: var(--panel);
-      backdrop-filter: blur(8px);
-    }
-
-    .hero {
-      padding: clamp(18px, 3.2vw, 30px);
-      position: relative;
+      border-radius: 22px;
       overflow: hidden;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(122, 72, 166, 0.10);
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -40px;
-      bottom: -80px;
-      width: 240px;
-      height: 240px;
+    .header {
+      padding: 20px 22px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      background: linear-gradient(180deg, #a95ad6 0%, #9a56c4 100%);
+      color: #fff;
+    }
+
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 18px;
+      height: 18px;
+      margin-top: 4px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 0, 0, 0.12), transparent 66%);
-      pointer-events: none;
+      background: radial-gradient(circle at 35% 35%, #fff, #ead8f7 48%, #c98bea 76%, #8f4dbb 100%);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.14);
+      flex: 0 0 auto;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(2rem, 5vw, 3.3rem);
-      line-height: 1.05;
-      letter-spacing: 0.04em;
+      font-size: clamp(1.5rem, 4vw, 2.15rem);
+      line-height: 1.1;
+      letter-spacing: 0.03em;
     }
 
-    .sub {
-      margin: 12px 0 0;
-      color: var(--muted);
-      line-height: 1.8;
-      max-width: 72ch;
+    .subtitle {
+      margin: 6px 0 0;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.84);
+      line-height: 1.55;
     }
 
-    .toolbar {
-      margin-top: 18px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .button {
-      border-radius: 999px;
-      border: 1px solid rgba(17, 17, 17, 0.14);
-      background: rgba(255, 255, 255, 0.92);
-      color: var(--ink);
-      padding: 10px 16px;
-      font: inherit;
-      font-weight: 700;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    }
-
-    .button {
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .button:hover {
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
-      background: rgba(255, 255, 255, 0.95);
-    }
-
-    .button:active { transform: translateY(1px); }
-
-    .button.primary {
-      background: linear-gradient(180deg, #111111, #000000);
-      color: #fff;
-      border-color: transparent;
-    }
-
-    .button.primary:hover {
-      background: linear-gradient(180deg, #333333, #111111);
-    }
-
-    .status {
-      margin-left: auto;
-      font-weight: 700;
-      color: #705c45;
-    }
-
-    .panel {
-      padding: clamp(16px, 2.8vw, 24px);
-      display: grid;
-      gap: 14px;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .titleline {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1.15rem;
-      font-weight: 800;
-    }
-
-    .dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #444444 70%);
-      box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.08);
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .notice {
-      display: none;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(248, 248, 248, 0.96);
-      border: 1px solid rgba(17, 17, 17, 0.12);
-      color: #222222;
-      font-weight: 700;
-      line-height: 1.6;
-    }
-
-    .notice.show { display: block; }
-
-    .paper {
-      position: relative;
-      border-radius: 24px;
-      overflow: hidden;
-      border: 1px solid rgba(17, 17, 17, 0.12);
-      background: linear-gradient(180deg, var(--paper), #fcfcfc);
-      box-shadow: var(--paper-shadow);
-      min-height: 520px;
-    }
-
-    .paper::before {
-      content: "";
-      position: absolute;
-      inset: 44px 0 0;
-      background-image: linear-gradient(to bottom, transparent 0, transparent 34px, var(--line) 35px);
-      background-size: 100% 35px;
-      pointer-events: none;
-      opacity: 0.95;
-    }
-
-    .paperbar {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      padding: 16px 18px 12px;
-      border-bottom: 1px solid rgba(17, 17, 17, 0.12);
-      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,248,248,0.9));
-    }
-
-    .paperbar label {
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-weight: 700;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pill::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #8eff9b;
+      box-shadow: 0 0 0 4px rgba(142,255,155,0.14);
+    }
+
+    .pill.dirty::before { background: #ffe08a; }
+    .pill.saving::before { background: #fff; }
+    .pill.error::before { background: #ff9aa6; }
+
+    .body {
+      padding: 0 16px 16px;
+      background: linear-gradient(180deg, var(--card-2), #fff);
+    }
+
+    .filebar {
+      padding: 15px 6px 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(122, 72, 166, 0.12);
+    }
+
+    .fileline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      color: var(--purple);
+      font-weight: 800;
+    }
+
+    .fileicon {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #efe4fb, #dfc2f6);
+      color: #8a51b5;
+      font-size: 0.92rem;
+      flex: 0 0 auto;
+    }
+
+    .fileinfo {
       color: var(--muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
     }
 
-    .paperbar input {
-      width: min(280px, 100%);
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(17, 17, 17, 0.14);
-      font: inherit;
+    .editor-shell {
+      margin-top: 12px;
+      border: 1px solid rgba(122, 72, 166, 0.10);
+      border-radius: 16px;
+      overflow: hidden;
       background: #fff;
-      color: var(--ink);
-      outline: none;
-    }
-
-    .paperbar input:focus {
-      border-color: rgba(17, 17, 17, 0.55);
-      box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
-    }
-
-    .editor-wrap {
-      position: relative;
-      z-index: 1;
-      padding: 14px 18px 18px;
-      min-height: 440px;
+      box-shadow: var(--shadow-soft);
     }
 
     textarea {
       width: 100%;
-      min-height: 430px;
+      min-height: 438px;
       resize: vertical;
       border: 0;
       outline: none;
-      background: transparent;
+      padding: 16px 18px 18px;
+      background: #fff;
       color: var(--ink);
-      font: 600 1.05rem/1.9 "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font: 500 1rem/1.9 "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
       white-space: pre-wrap;
-      padding: 4px 2px 8px;
     }
+
+    textarea::placeholder { color: #b59dc7; }
 
     .footer {
+      margin-top: 14px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px 14px;
       justify-content: space-between;
-      color: var(--muted);
-      font-size: 0.92rem;
-      padding: 0 4px;
+      align-items: center;
+      gap: 12px;
+      padding: 0 4px 2px;
     }
 
-    .saving { color: var(--accent-strong); }
+    .stats {
+      color: #6f5c80;
+      font-size: 0.88rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
 
-    @media (max-width: 720px) {
-      .status { margin-left: 0; width: 100%; }
-      .paperbar input { width: 100%; }
-      textarea { min-height: 340px; }
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid rgba(122, 72, 166, 0.14);
+      border-radius: 14px;
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      background: #fff;
+      color: #6a4e7e;
+      box-shadow: 0 8px 18px rgba(150, 88, 197, 0.08);
+      transition: transform 0.12s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(150, 88, 197, 0.12);
+    }
+
+    button.primary {
+      border-color: transparent;
+      color: #fff;
+      background: linear-gradient(180deg, var(--purple-2), var(--purple));
+    }
+
+    .meta {
+      margin-top: 10px;
+      color: #9b86ab;
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .message {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f7f0fd;
+      border: 1px solid rgba(122, 72, 166, 0.12);
+      color: #735486;
+      font-size: 0.9rem;
+    }
+
+    .message.show { display: block; }
+
+    @media (max-width: 760px) {
+      body { padding: 12px; }
+      .header,
+      .footer,
+      .filebar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .pill { width: 100%; justify-content: center; }
+      textarea { min-height: 360px; }
+      .actions { width: 100%; }
+      .actions button { flex: 1; }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="hero">
-      <h1>雲端記事本</h1>
-      <p class="sub">這是一個單一 Google Apps Script 檔案版記事本。開啟時會自動讀取指定雲端資料夾中的 <strong>記事本.txt</strong>，若不存在就建立；按下 <strong>Save</strong> 會直接寫回同一個檔案。</p>
-      <div class="toolbar">
-        <button class="button primary" id="saveBtn" type="button">Save</button>
-        <div class="status" id="status">初始化中</div>
+  <main class="app">
+    <header class="header">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <div>
+          <h1>雲端記事本</h1>
+          <p class="subtitle">直接使用 GAS 讀寫 Google 雲端資料夾，預設開啟記事本.txt</p>
+        </div>
       </div>
-    </section>
+      <div class="pill" id="savePill">已儲存</div>
+    </header>
 
-    <section class="panel">
-      <div class="row">
-        <div class="titleline"><span class="dot"></span>記事本編輯區</div>
-        <div class="meta">
+    <section class="body">
+      <div class="filebar">
+        <div class="fileline">
+          <span class="fileicon">文</span>
           <span id="fileName">記事本.txt</span>
-          <span id="fileInfo">等待讀取</span>
         </div>
+        <div class="fileinfo" id="fileState">已儲存</div>
       </div>
 
-      <div class="notice" id="notice"></div>
-
-      <div class="paper">
-        <div class="paperbar">
-          <label for="docTitle">檔案</label>
-          <input id="docTitle" type="text" value="記事本.txt" readonly />
-          <span class="chip" id="shortcutHint">Ctrl + S / ⌘ + S</span>
-        </div>
-        <div class="editor-wrap">
-          <textarea id="editor" spellcheck="false" placeholder="載入中..."></textarea>
-        </div>
+      <div class="editor-shell">
+        <textarea id="editor" spellcheck="false" placeholder="載入中..."></textarea>
       </div>
+
+      <div class="message" id="message"></div>
 
       <div class="footer">
-        <div>狀態：<strong id="saveState">初始化中</strong></div>
-        <div>儲存目標：Google 雲端資料夾 ID 1L29dWvmGy9nTt4HHEPlkiCp1TKZjSN6V</div>
+        <div class="stats">
+          <span>字數：<strong id="charCount">0</strong></span>
+          <span>最後修改：<strong id="lastUpdated">--</strong></span>
+        </div>
+        <div class="actions">
+          <button type="button" id="reloadBtn">重新載入</button>
+          <button type="button" class="primary" id="saveBtn">Save</button>
+        </div>
       </div>
+
+      <div class="meta">儲存目標：Google 雲端資料夾 ID 1L29dWvmGy9nTt4HHEPlkiCp1TKZjSN6V</div>
     </section>
   </main>
 
   <script>
     const editor = document.getElementById('editor');
     const saveBtn = document.getElementById('saveBtn');
-    const statusEl = document.getElementById('status');
-    const saveStateEl = document.getElementById('saveState');
-    const noticeEl = document.getElementById('notice');
-    const fileNameEl = document.getElementById('fileName');
-    const fileInfoEl = document.getElementById('fileInfo');
+    const reloadBtn = document.getElementById('reloadBtn');
+    const savePill = document.getElementById('savePill');
+    const fileState = document.getElementById('fileState');
+    const fileName = document.getElementById('fileName');
+    const message = document.getElementById('message');
+    const charCount = document.getElementById('charCount');
+    const lastUpdated = document.getElementById('lastUpdated');
     const autosaveDelayMs = 900;
 
     let activeContent = '';
@@ -409,58 +397,61 @@ function getHtml_() {
     let isLoaded = false;
     let autosaveTimer = null;
 
-    function setStatus(text, mode) {
-      statusEl.textContent = text;
-      saveStateEl.textContent = text;
-      saveStateEl.className = mode === 'saving' ? 'saving' : '';
-    }
-
-    function showNotice(text) {
-      noticeEl.textContent = text;
-      noticeEl.classList.add('show');
-    }
-
-    function hideNotice() {
-      noticeEl.classList.remove('show');
-      noticeEl.textContent = '';
-    }
-
-    function setMetadata(payload) {
-      const lastUpdated = payload.lastUpdated ? new Date(payload.lastUpdated).toLocaleString('zh-TW') : '未知';
-      fileNameEl.textContent = payload.fileName || '記事本.txt';
-      fileInfoEl.textContent = '最後更新：' + lastUpdated;
-      document.title = (payload.fileName || '雲端記事本') + ' - 雲端記事本';
-      document.getElementById('docTitle').value = payload.fileName || '記事本.txt';
-    }
-
     function hasBridge() {
       return typeof google !== 'undefined' && google.script && google.script.run;
     }
 
+    function setMessage(text, show) {
+      message.textContent = text || '';
+      message.classList.toggle('show', !!show);
+    }
+
+    function setCharCount() {
+      charCount.textContent = String(editor.value.length);
+    }
+
+    function setState(text, mode) {
+      fileState.textContent = text;
+      savePill.textContent = text;
+      savePill.className = 'pill';
+      if (mode) {
+        savePill.classList.add(mode);
+      }
+    }
+
+    function setMeta(payload) {
+      const updated = payload.lastUpdated ? new Date(payload.lastUpdated).toLocaleString('zh-TW') : '--';
+      fileName.textContent = payload.fileName || '記事本.txt';
+      lastUpdated.textContent = updated;
+      document.title = (payload.fileName || '雲端記事本') + ' - 作品 06';
+    }
+
     function loadFromServer() {
-      setStatus('讀取中...');
+      setState('讀取中...', 'saving');
+      setMessage('', false);
       google.script.run
         .withSuccessHandler((payload) => {
           activeContent = payload.content || '';
           editor.value = activeContent;
-          setMetadata(payload);
-          setStatus('已連線');
           isDirty = false;
           isLoaded = true;
-          hideNotice();
+          setMeta(payload);
+          setCharCount();
+          setState('已儲存');
+          setMessage('已連線到 Google 雲端資料夾中的記事本.txt。', true);
         })
         .withFailureHandler((error) => {
           console.error(error);
-          setStatus('讀取失敗');
-          showNotice('無法讀取雲端記事本，請確認此 Apps Script 已授權 Drive 存取權限。');
+          setState('讀取失敗', 'error');
+          setMessage('讀取失敗，請確認這個 Apps Script 已取得 Drive 存取權限。', true);
         })
         .getDocumentData();
     }
 
     function loadDocument() {
       if (!hasBridge()) {
-        setStatus('請以 Apps Script Web App 開啟');
-        showNotice('這個頁面必須由 Apps Script Web App 提供，才能直接讀寫 Google 雲端資料夾中的記事本.txt。');
+        setState('請以 Web App 開啟', 'error');
+        setMessage('這個頁面必須由 Apps Script Web App 提供，才能直接讀寫雲端記事本。', true);
         return;
       }
 
@@ -478,8 +469,8 @@ function getHtml_() {
       }
 
       isSaving = true;
-      setStatus('儲存中...', 'saving');
-      hideNotice();
+      setState('儲存中...', 'saving');
+      setMessage('', false);
 
       const content = editor.value;
 
@@ -487,17 +478,18 @@ function getHtml_() {
         .withSuccessHandler((payload) => {
           activeContent = content;
           editor.value = payload.content || content;
-          setMetadata(payload);
-          setStatus('已儲存');
           isDirty = false;
-          showNotice('內容已寫回記事本.txt。');
           isSaving = false;
+          setMeta(payload);
+          setCharCount();
+          setState('已儲存');
+          setMessage('內容已寫回記事本.txt。', true);
         })
         .withFailureHandler((error) => {
           console.error(error);
-          setStatus('儲存失敗');
-          showNotice('儲存失敗，請稍後再試。');
           isSaving = false;
+          setState('儲存失敗', 'error');
+          setMessage('儲存失敗，請稍後再試。', true);
         })
         .saveDocument(content);
     }
@@ -511,23 +503,24 @@ function getHtml_() {
         clearTimeout(autosaveTimer);
       }
 
-      autosaveTimer = setTimeout(() => {
+      autosaveTimer = setTimeout(function () {
         autosaveTimer = null;
         saveDocument();
       }, autosaveDelayMs);
     }
 
-    editor.addEventListener('input', () => {
+    editor.addEventListener('input', function () {
+      setCharCount();
       isDirty = editor.value !== activeContent;
       if (isDirty) {
-        setStatus('未儲存變更');
+        setState('未儲存變更', 'dirty');
         scheduleAutosave();
       } else if (isLoaded) {
-        setStatus('已連線');
+        setState('已儲存');
       }
     });
 
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keydown', function (event) {
       const isSaveShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's';
       if (isSaveShortcut) {
         event.preventDefault();
@@ -535,9 +528,10 @@ function getHtml_() {
       }
     });
 
-  saveBtn.addEventListener('click', saveDocument);
+    saveBtn.addEventListener('click', saveDocument);
+    reloadBtn.addEventListener('click', loadDocument);
 
-    window.addEventListener('beforeunload', (event) => {
+    window.addEventListener('beforeunload', function (event) {
       if (autosaveTimer) {
         clearTimeout(autosaveTimer);
         autosaveTimer = null;
