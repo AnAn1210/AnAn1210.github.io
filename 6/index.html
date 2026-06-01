@@ -264,52 +264,143 @@
       .grid { grid-template-columns: 1fr; }
     }
     .cover{width:100%;display:block;object-fit:cover;max-height:320px;border-radius:18px}
+    /* new layout for live note */
+    .topbar {
+      background: linear-gradient(90deg,#8b5cf6,#c084fc);
+      color: #fff;
+      border-radius: 18px;
+      padding: 18px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .top-left { display:flex; gap:12px; align-items:center }
+    .top-mark { width:44px; height:44px; border-radius:10px; background:rgba(255,255,255,0.12); display:grid; place-items:center; font-weight:800 }
+    .top-title { font-size:1.15rem; font-weight:900; margin:0 }
+    .top-sub { margin:4px 0 0; opacity:0.95; font-size:0.95rem }
+    .save-pill { background: rgba(255,255,255,0.12); padding:8px 12px; border-radius:999px; font-weight:800; display:inline-flex; gap:10px; align-items:center }
+    .dot { width:10px; height:10px; border-radius:50%; box-shadow:0 0 0 6px rgba(0,255,150,0.08) }
+
+    .note-wrap { background: linear-gradient(180deg,#fff,#fff); border-radius:18px; padding:22px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); }
+    .note-head { display:flex; align-items:center; justify-content:space-between; gap:12px }
+    .file-meta { display:flex; gap:12px; align-items:center }
+    .file-icon { width:36px; height:36px; border-radius:9px; background: linear-gradient(180deg,#f3f0ff,#efe6ff); display:grid; place-items:center; font-weight:800 }
+
+    .editor { margin-top:14px }
+    textarea.editor-area { width:100%; min-height:360px; border-radius:12px; padding:18px; border:1px solid rgba(0,0,0,0.06); resize:vertical; font-size:1rem; line-height:1.7; font-family: inherit }
+
+    .note-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px }
+    .meta-left { color: #6b6b6b; font-size:0.92rem }
+    .controls { display:flex; gap:12px }
+    .btn { padding:10px 16px; border-radius:999px; border:1px solid rgba(0,0,0,0.06); background:#fff; cursor:pointer; font-weight:800 }
+    .btn.ghost { background: linear-gradient(180deg,#fff,#f6f6f8) }
+    .btn.save { color:#fff; background: linear-gradient(90deg,#8b5cf6,#c084fc); border:none }
+
+    @media (max-width:780px){ .grid{grid-template-columns:1fr} .note-wrap{padding:16px} textarea.editor-area{min-height:260px} }
   </style>
 </head>
 <body>
   <main class="app">
-    <img class="cover" src="../assets/6.png" alt="雲端記事本 封面">
-    <section class="hero">
-      <div class="brand">
-        <span class="brand-mark"></span>
+    <div class="topbar">
+      <div class="top-left">
+        <div class="top-mark">雲</div>
         <div>
-          <h1>雲端記事本</h1>
-          <p class="sub">這個作品是以單一 Google Apps Script 完成的雲端記事本，介面風格與實際 Web App 一致，直接讀寫 Google Drive 中的 <strong>記事本.txt</strong>。</p>
+          <h2 class="top-title">雲端記事本</h2>
+          <div class="top-sub">直接使用 GAS 與 Google Drive 儲存記事</div>
         </div>
       </div>
-      <div class="status-pill">已儲存</div>
-    </section>
+      <div class="save-pill"><span class="dot" id="status-dot" style="background:#8eff9b"></span><span id="status-text">已儲存</span></div>
+    </div>
 
-    <section class="grid">
-      <article class="card">
-        <h2 class="title">作品重點</h2>
-        <p class="desc">頁面採紫色記事本風格，包含標題列、狀態膠囊、編輯區、字數與最後修改資訊，接近你提供的畫面。</p>
-        <ul class="list">
-          <li>單檔 GAS，不依賴前端 index.html</li>
-          <li>直接透過 DriveApp 操作雲端資料夾</li>
-          <li>自動建立或開啟 <strong>記事本.txt</strong></li>
-        </ul>
-        <div class="actions">
-          <a class="button primary" href="https://script.google.com/macros/s/AKfycbwE5KMiIpikitZGF718YtqU6NlTd4hjJnb5_N7oA2pGs59j08TRU52Pm_r6Sg25U-qI0w/exec" target="_blank" rel="noopener">開啟記事本</a>
-          <a class="button" href="../index.html">回作品集</a>
-        </div>
-        <div class="meta">把上方網址換成你實際部署的 `/exec` 連結，就能直接開啟作品。</div>
-      </article>
+    <div style="height:18px"></div>
 
-      <aside class="card">
-        <div class="note-card">
-          <div class="note-head">
-            <div class="left"><span class="note-icon">文</span><span>記事本.txt</span></div>
-            <div>已儲存</div>
-          </div>
-          <div class="note-body">
-            <div class="mock-paper">
-              <div class="mock-text">今天是星期幾</div>
-            </div>
+    <div class="note-wrap">
+      <div class="note-head">
+        <div class="file-meta">
+          <div class="file-icon">文</div>
+          <div>
+            <div style="font-weight:800">記事本.txt</div>
+            <div style="font-size:0.9rem;color:#6c6c6c">直接使用 GAS 存取 Google Drive</div>
           </div>
         </div>
-      </aside>
-    </section>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn ghost" id="reloadBtn">重新載入</button>
+          <button class="btn save" id="saveBtn">Save</button>
+        </div>
+      </div>
+
+      <div class="editor">
+        <textarea class="editor-area" id="editor" placeholder="在此編輯...">今天是星期幾</textarea>
+      </div>
+
+      <div class="note-footer">
+        <div class="meta-left"><span id="charCount">字數：5</span> · <span id="lastSaved">最後修改：--</span></div>
+        <div class="controls">
+          <button class="btn ghost" id="reloadBtn2">重新載入</button>
+          <button class="btn save" id="saveBtn2">Save</button>
+        </div>
+      </div>
+    </div>
+    <div style="height:18px"></div>
+
+    <div style="text-align:center;color:#888;margin-top:8px">若要部署真實雲端，請點上方「開啟記事本」並改為你的 GAS `/exec` 連結。</div>
+    <div style="text-align:center;margin-top:12px"><a class="button" href="../index.html">回作品集</a> <a class="button" href="https://script.google.com/macros/s/AKfycbwE5KMiIpikitZGF718YtqU6NlTd4hjJnb5_N7oA2pGs59j08TRU52Pm_r6Sg25U-qI0w/exec" target="_blank" rel="noopener">開啟 GAS 部署</a></div>
   </main>
+
+  <script>
+    const editor = document.getElementById('editor');
+    const saveBtn = document.getElementById('saveBtn');
+    const saveBtn2 = document.getElementById('saveBtn2');
+    const reloadBtn = document.getElementById('reloadBtn');
+    const reloadBtn2 = document.getElementById('reloadBtn2');
+    const charCount = document.getElementById('charCount');
+    const lastSaved = document.getElementById('lastSaved');
+    const statusText = document.getElementById('status-text');
+    const statusDot = document.getElementById('status-dot');
+
+    const KEY = 'notebook.txt.v1';
+
+    function updateMeta() {
+      const text = editor.value || '';
+      charCount.textContent = '字數：' + text.length;
+      const meta = JSON.parse(localStorage.getItem(KEY + '.meta') || 'null');
+      lastSaved.textContent = meta ? ('最後修改：' + meta.time) : '最後修改：--';
+    }
+
+    function setSaved() {
+      statusText.textContent = '已儲存';
+      statusDot.style.background = '#8eff9b';
+    }
+
+    function setSaving() {
+      statusText.textContent = '儲存中...';
+      statusDot.style.background = '#ffd86b';
+    }
+
+    function save() {
+      setSaving();
+      const text = editor.value || '';
+      localStorage.setItem(KEY, text);
+      const t = new Date();
+      const meta = { time: t.toLocaleString() };
+      localStorage.setItem(KEY + '.meta', JSON.stringify(meta));
+      setTimeout(() => { setSaved(); updateMeta(); }, 350);
+    }
+
+    function reload() {
+      const val = localStorage.getItem(KEY);
+      if (val !== null) editor.value = val;
+      updateMeta();
+      setSaved();
+    }
+
+    editor.addEventListener('input', () => { updateMeta(); statusText.textContent = '未儲存'; statusDot.style.background = '#ff8b8b'; });
+    saveBtn.addEventListener('click', save); saveBtn2.addEventListener('click', save);
+    reloadBtn.addEventListener('click', reload); reloadBtn2.addEventListener('click', reload);
+
+    // init
+    reload();
+  </script>
 </body>
 </html>
