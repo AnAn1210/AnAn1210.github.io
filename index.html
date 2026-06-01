@@ -61,6 +61,8 @@
     .card{display:block;background:#fff;border-radius:var(--card-radius);overflow:hidden;border:1px solid rgba(15,23,21,0.04);text-decoration:none;color:inherit;box-shadow:0 8px 20px rgba(11,22,28,0.06)}
     .thumb{width:100%;height:140px;object-fit:cover;display:block;background:#eef4fb}
     .card-body{padding:14px}
+    .card-head{display:flex;align-items:center;gap:10px}
+    .cute{width:44px;height:44px;border-radius:999px;background:linear-gradient(180deg,#fff 0%, #fff6 100%);display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 6px 18px rgba(15,23,21,0.06)}
     .num{font-size:0.85rem;color:var(--muted);margin-bottom:6px}
     .card h3{margin:0;font-size:1.05rem}
     .desc{margin:8px 0 0;color:var(--muted);font-size:0.95rem}
@@ -92,8 +94,13 @@
           <a class="card" href="1/index.html" aria-label="前往作品 1">
             <img class="thumb" src="assets/1.png" alt="作品 1 預覽圖">
             <div class="card-body">
-              <div class="num">1. 打地鼠</div>
-              <h3>打地鼠</h3>
+              <div class="card-head">
+                <img class="cute" src="assets/badge1.svg" alt="打地鼠 徽章">
+                <div>
+                  <div class="num">1. 打地鼠</div>
+                  <h3>打地鼠</h3>
+                </div>
+              </div>
               <p class="desc">簡單互動遊戲，練習計時與事件處理。</p>
               <div class="actions"><span class="btn">查看</span></div>
             </div>
@@ -102,8 +109,13 @@
           <a class="card" href="2/index.html" aria-label="前往作品 2">
             <img class="thumb" src="assets/2.png" alt="作品 2 預覽圖">
             <div class="card-body">
-              <div class="num">2. 貪食蛇</div>
-              <h3>貪食蛇</h3>
+              <div class="card-head">
+                <img class="cute" src="assets/badge2.svg" alt="貪食蛇 徽章">
+                <div>
+                  <div class="num">2. 貪食蛇</div>
+                  <h3>貪食蛇</h3>
+                </div>
+              </div>
               <p class="desc">經典貪食蛇遊戲，支援鍵盤操作與畫面邊界偵測。</p>
               <div class="actions"><span class="btn">查看</span></div>
             </div>
@@ -112,8 +124,13 @@
           <a class="card" href="3/index.html" aria-label="前往作品 3">
             <img class="thumb" src="assets/3.png" alt="作品 3 預覽圖">
             <div class="card-body">
-              <div class="num">3. 工程計算機</div>
-              <h3>工程計算機</h3>
+              <div class="card-head">
+                <div class="cute">🧮</div>
+                <div>
+                  <div class="num">3. 工程計算機</div>
+                  <h3>工程計算機</h3>
+                </div>
+              </div>
               <p class="desc">帶有進階函數的線上計算工具。</p>
               <div class="actions"><span class="btn">查看</span></div>
             </div>
@@ -122,8 +139,13 @@
           <a class="card" href="4/index.html" aria-label="前往作品 4">
             <img class="thumb" src="assets/4.png" alt="作品 4 預覽圖">
             <div class="card-body">
-              <div class="num">4. Gemini 聊天機器人</div>
-              <h3>聊天機器人</h3>
+              <div class="card-head">
+                <div class="cute">🤖</div>
+                <div>
+                  <div class="num">4. Gemini 聊天機器人</div>
+                  <h3>聊天機器人</h3>
+                </div>
+              </div>
               <p class="desc">示範整合第三方 API 的聊天介面。</p>
               <div class="actions"><span class="btn">查看</span></div>
             </div>
@@ -132,8 +154,13 @@
           <a class="card" href="5/index.html" aria-label="前往作品 5">
             <img class="thumb" src="assets/5.png" alt="作品 5 預覽圖">
             <div class="card-body">
-              <div class="num">5. ntfy 聊天應用</div>
-              <h3>ntfy 應用</h3>
+              <div class="card-head">
+                <div class="cute">🔔</div>
+                <div>
+                  <div class="num">5. ntfy 聊天應用</div>
+                  <h3>ntfy 應用</h3>
+                </div>
+              </div>
               <p class="desc">使用 ntfy 推播與即時訊息整合的示範。</p>
               <div class="actions"><span class="btn">查看</span></div>
             </div>
@@ -142,8 +169,13 @@
           <a class="card" href="6/index.html" aria-label="前往作品 6">
             <img class="thumb" src="assets/6.png" alt="作品 6 預覽圖">
             <div class="card-body">
-              <div class="num">6. 雲端記事本</div>
-              <h3>雲端記事本</h3>
+              <div class="card-head">
+                <div class="cute">📝</div>
+                <div>
+                  <div class="num">6. 雲端記事本</div>
+                  <h3>雲端記事本</h3>
+                </div>
+              </div>
               <p class="desc">Google Apps Script + Drive 的線上記事工具。</p>
               <div class="actions"><span class="btn">查看</span></div>
             </div>
