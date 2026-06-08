@@ -44,7 +44,7 @@ function getQuizBootstrap() {
     totalScore: TOTAL_SCORE,
     questionCount: questionCount,
     pointsPerQuestion: pointsPerQuestion,
-    sourceCount: source.entries.length,
+    sourceCount: source.isDemo ? 200 : source.entries.length,
     sourceLabel: source.label,
     warning: source.warning,
     quiz: quiz,
@@ -61,6 +61,7 @@ function loadQuestionBank_() {
       label: '範例題庫',
       entries: normalizeEntries_(DEMO_BANK),
       warning: '尚未設定試算表 ID，已使用示範題庫。',
+      isDemo: true,
     };
   }
 
@@ -80,6 +81,7 @@ function loadQuestionBank_() {
         label: sheet.getName() + '（資料不足，改用示範題庫）',
         entries: normalizeEntries_(DEMO_BANK),
         warning: '試算表內題目數量不足，已改用示範題庫。',
+        isDemo: true,
       };
     }
 
@@ -87,12 +89,14 @@ function loadQuestionBank_() {
       label: sheet.getName(),
       entries: entries,
       warning: '',
+      isDemo: false,
     };
   } catch (error) {
     return {
       label: '示範題庫',
       entries: normalizeEntries_(DEMO_BANK),
       warning: '讀取試算表失敗，已使用示範題庫：' + error.message,
+      isDemo: true,
     };
   }
 }
