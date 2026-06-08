@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>英文單字測驗</title>
+  <style>
+    :root {
+      --bg: #eef2f5;
+      --bg-2: #d9e8f1;
+      --panel: rgba(255, 255, 255, 0.94);
+      --panel-2: rgba(255, 255, 255, 0.98);
+      --ink: #22313f;
+      --muted: #6e7d89;
+      --soft: rgba(34, 49, 63, 0.08);
+      --line: rgba(34, 49, 63, 0.10);
+      --accent: #1695a3;
+      --accent-2: #f2bf2f;
+      --success: #1e9b68;
+      --danger: #d75555;
+      --shadow: 0 24px 60px rgba(22, 41, 56, 0.12);
+      --shadow-soft: 0 10px 24px rgba(22, 41, 56, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.96), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.55), transparent 30%),
+        linear-gradient(145deg, var(--bg), var(--bg-2));
+      padding: 14px;
+    }
+
+    .app {
+      width: min(860px, 100%);
+      margin: 0 auto;
+      border-radius: 30px;
+      overflow: hidden;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.72);
+    }
+
+    .hero {
+      position: relative;
+      padding: 24px 24px 20px;
+      color: #fff;
+      background: linear-gradient(90deg, #0f7c84 0%, #1ca1ad 46%, #f2c532 100%);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      position: relative;
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.08;
+      letter-spacing: 0.04em;
+      text-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .hero p {
+      position: relative;
+      margin: 10px 0 0;
+      max-width: 74ch;
+      color: rgba(15, 31, 39, 0.86);
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .content {
+      padding: 18px 18px 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), #fff 22%);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      border-radius: 18px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 14px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .quiz-card {
+      position: relative;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 16px 16px;
+      overflow: hidden;
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .quiz-label {
+      color: var(--muted);
+      font-size: 0.94rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .source-pill {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(22, 149, 163, 0.12);
+      color: #0f6973;
+      font-weight: 900;
+      font-size: 0.92rem;
+      text-align: center;
+      min-width: 124px;
+    }
+
+    .question {
+      margin: 8px 0 16px;
+      font-size: clamp(2.5rem, 7vw, 4.6rem);
+      line-height: 1.02;
+      letter-spacing: 0.01em;
+      font-weight: 900;
+      color: #213447;
+      word-break: break-word;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .option {
+      border: 1px solid rgba(34, 49, 63, 0.10);
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+      border-radius: 16px;
+      min-height: 74px;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 1.04rem;
+      color: #344452;
+      box-shadow: 0 6px 18px rgba(16, 33, 48, 0.04);
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .option:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(16, 33, 48, 0.08);
+      border-color: rgba(22, 149, 163, 0.26);
+    }
+
+    .option:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .option.correct {
+      border-color: rgba(30, 155, 104, 0.42);
+      background: linear-gradient(180deg, rgba(30,155,104,0.14), rgba(30,155,104,0.06));
+      color: #0f6f4b;
+      box-shadow: 0 10px 24px rgba(30, 155, 104, 0.10);
+    }
+
+    .option.wrong {
+      border-color: rgba(215, 85, 85, 0.42);
+      background: linear-gradient(180deg, rgba(215,85,85,0.12), rgba(215,85,85,0.05));
+      color: #a93a3a;
+    }
+
+    .option.ghost {
+      color: rgba(52, 68, 82, 0.48);
+    }
+
+    .result {
+      margin-top: 16px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .result-text {
+      font-size: 0.98rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .result-text strong {
+      color: var(--ink);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      min-width: 120px;
+      font-size: 1rem;
+      font-weight: 900;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(180deg, #19a6b5, #138f9c);
+      box-shadow: 0 16px 28px rgba(19, 143, 156, 0.22);
+      transition: transform 0.12s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 34px rgba(19, 143, 156, 0.28);
+    }
+
+    .button.secondary {
+      background: linear-gradient(180deg, #18b0c1, #1690a0);
+    }
+
+    .button:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .loading,
+    .error,
+    .empty {
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .content { padding: 14px; }
+      .stats { grid-template-columns: 1fr; }
+      .options { grid-template-columns: 1fr; }
+      .question { font-size: clamp(2.2rem, 14vw, 3.8rem); }
+      .hero { padding: 20px 18px 18px; }
+      .quiz-top { flex-direction: column; }
+      .source-pill { min-width: 0; width: 100%; }
+      .actions { justify-content: stretch; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="英文單字測驗">
+    <section class="hero">
+      <h1>英文單字測驗</h1>
+      <p>題目會從 Google 試算表讀取英文單字與中文意思，系統隨機出題，答完可立即看到成績。</p>
+    </section>
+
+    <section class="content">
+      <div id="loading" class="loading">載入題庫中...</div>
+
+      <div id="quiz-shell" hidden>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">目前題號</div>
+            <div class="stat-value" id="question-count">0 / 0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">目前分數</div>
+            <div class="stat-value" id="score-value">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">單字來源</div>
+            <div class="stat-value" id="source-count">0 個單字</div>
+          </div>
+        </div>
+
+        <section class="quiz-card" aria-live="polite">
+          <div class="quiz-top">
+            <div class="quiz-label" id="quiz-label">請選出這個英文字單字的正確中文意思</div>
+            <div class="source-pill" id="source-pill">工作表：題庫</div>
+          </div>
+
+          <div class="question" id="question-word">advantage</div>
+
+          <div class="options" id="options"></div>
+
+          <div class="result">
+            <div class="result-text" id="result-text">選擇答案後會立即顯示對錯。</div>
+          </div>
+
+          <div class="actions">
+            <button class="button secondary" id="reset-btn" type="button">重新抽題</button>
+          </div>
+        </section>
+
+        <div class="status" id="status-text"></div>
+      </div>
+
+      <div id="error-box" class="error" hidden></div>
+      <div id="empty-box" class="empty" hidden></div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      quiz: [],
+      currentIndex: 0,
+      score: 0,
+      pointsPerQuestion: 10,
+      locked: false,
+      selectedButton: null,
+      answerTimer: null,
+      bootstrap: null,
+    };
+
+    const nodes = {
+      loading: document.getElementById('loading'),
+      shell: document.getElementById('quiz-shell'),
+      error: document.getElementById('error-box'),
+      empty: document.getElementById('empty-box'),
+      questionCount: document.getElementById('question-count'),
+      scoreValue: document.getElementById('score-value'),
+      sourceCount: document.getElementById('source-count'),
+      sourcePill: document.getElementById('source-pill'),
+      quizLabel: document.getElementById('quiz-label'),
+      questionWord: document.getElementById('question-word'),
+      options: document.getElementById('options'),
+      resultText: document.getElementById('result-text'),
+      statusText: document.getElementById('status-text'),
+      resetBtn: document.getElementById('reset-btn'),
+    };
+
+    function init() {
+      const runner = window.google && google.script && google.script.run;
+      if (!runner) {
+        renderApp(buildLocalDemo());
+        return;
+      }
+
+      runner
+        .withSuccessHandler(renderApp)
+        .withFailureHandler(showError)
+        .getQuizBootstrap();
+    }
+
+    function showError(error) {
+      nodes.loading.hidden = true;
+      nodes.error.hidden = false;
+      nodes.error.textContent = '載入失敗：' + ((error && error.message) ? error.message : String(error || '未知錯誤'));
+    }
+
+    function renderApp(bootstrap) {
+      state.bootstrap = bootstrap;
+      state.quiz = Array.isArray(bootstrap.quiz) ? bootstrap.quiz.slice() : [];
+      state.pointsPerQuestion = Number(bootstrap.pointsPerQuestion) || 10;
+      state.currentIndex = 0;
+      state.score = 0;
+
+      nodes.loading.hidden = true;
+      nodes.error.hidden = true;
+      nodes.empty.hidden = true;
+      nodes.shell.hidden = false;
+
+      if (!state.quiz.length) {
+        nodes.empty.hidden = false;
+        nodes.empty.textContent = '題庫目前沒有資料，請先在試算表中新增英文單字與中文意思。';
+        nodes.shell.hidden = true;
+        return;
+      }
+
+      nodes.sourceCount.textContent = formatNumber(bootstrap.sourceCount || 0) + ' 個單字';
+      nodes.sourcePill.textContent = '工作表：' + (bootstrap.sourceLabel || '題庫');
+      nodes.quizLabel.textContent = bootstrap.warning ? bootstrap.warning : '請選出這個英文字單字的正確中文意思';
+      nodes.statusText.textContent = formatNumber(state.quiz.length) + ' 題，共 ' + formatNumber(bootstrap.totalScore || 100) + ' 分。';
+      nodes.resetBtn.textContent = '重新抽題';
+      updateScoreboard();
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      clearTimeout(state.answerTimer);
+      const question = state.quiz[state.currentIndex];
+      state.locked = false;
+      state.selectedButton = null;
+
+      nodes.questionWord.textContent = question.word;
+      nodes.resultText.innerHTML = '選擇答案後會立即顯示對錯。';
+      nodes.questionCount.textContent = (state.currentIndex + 1) + ' / ' + state.quiz.length;
+      nodes.resetBtn.disabled = false;
+      nodes.options.innerHTML = '';
+
+      question.options.forEach(function (optionText, optionIndex) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'option';
+        button.textContent = optionText;
+        button.addEventListener('click', function () { selectAnswer(button, optionIndex); });
+        nodes.options.appendChild(button);
+      });
+    }
+
+    function selectAnswer(button, optionIndex) {
+      if (state.locked) {
+        return;
+      }
+
+      const question = state.quiz[state.currentIndex];
+      state.locked = true;
+      state.selectedButton = button;
+
+      const buttons = Array.from(nodes.options.querySelectorAll('.option'));
+      buttons.forEach(function (btn) {
+        btn.disabled = true;
+        if (btn.textContent === question.options[question.answerIndex]) {
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('ghost');
+        }
+      });
+
+      const isCorrect = optionIndex === question.answerIndex;
+      if (isCorrect) {
+        button.classList.add('correct');
+        state.score += state.pointsPerQuestion;
+        nodes.resultText.innerHTML = '答對了，<strong>+' + formatNumber(state.pointsPerQuestion) + ' 分</strong>。';
+      } else {
+        button.classList.add('wrong');
+        nodes.resultText.innerHTML = '答錯了，正確答案是 <strong>' + question.options[question.answerIndex] + '</strong>。';
+      }
+
+      updateScoreboard();
+
+      state.answerTimer = setTimeout(function () {
+        if (state.currentIndex + 1 >= state.quiz.length) {
+          showFinalResult();
+          return;
+        }
+        state.currentIndex += 1;
+        renderQuestion();
+      }, 850);
+    }
+
+    function showFinalResult() {
+      nodes.options.innerHTML = '';
+      nodes.questionWord.textContent = '完成';
+      nodes.questionCount.textContent = state.quiz.length + ' / ' + state.quiz.length;
+      nodes.resultText.innerHTML = '完成作答，最後成績 <strong>' + formatNumber(state.score) + ' / 100</strong>。';
+      nodes.statusText.innerHTML = '已完成 <strong>' + formatNumber(state.quiz.length) + '</strong> 題，按下重新抽題可再次測驗。';
+      nodes.resetBtn.disabled = false;
+      nodes.resetBtn.textContent = '重新抽題';
+      updateScoreboard();
+    }
+
+    function updateScoreboard() {
+      nodes.scoreValue.textContent = formatNumber(state.score);
+      nodes.questionCount.textContent = Math.min(state.currentIndex + 1, state.quiz.length) + ' / ' + state.quiz.length;
+    }
+
+    function restartQuiz() {
+      if (!state.bootstrap) {
+        return;
+      }
+
+      state.quiz = shuffleLocal(state.bootstrap.quiz.slice());
+      state.currentIndex = 0;
+      state.score = 0;
+      renderQuestion();
+      updateScoreboard();
+      nodes.statusText.textContent = formatNumber(state.quiz.length) + ' 題，共 ' + formatNumber(state.bootstrap.totalScore || 100) + ' 分。';
+    }
+
+    function shuffleLocal(array) {
+      const result = array.slice();
+      for (let index = result.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        const temp = result[index];
+        result[index] = result[swapIndex];
+        result[swapIndex] = temp;
+      }
+      return result;
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString('zh-Hant');
+    }
+
+    function buildLocalDemo() {
+      return {
+        title: '英文單字測驗',
+        subtitle: '離線示範資料',
+        totalScore: 100,
+        sourceCount: 20,
+        sourceLabel: '範例題庫',
+        warning: '目前是在本機預覽模式，這份題庫來自內建示範資料。',
+        pointsPerQuestion: 10,
+        quiz: [
+          { word: 'advantage', meaning: '優點；優勢', options: ['優點；優勢', '勇敢的', '日曆；行事曆', '困難的'], answerIndex: 0 },
+          { word: 'brave', meaning: '勇敢的', options: ['健康的', '勇敢的', '選擇', '支持；支援'], answerIndex: 1 },
+          { word: 'calendar', meaning: '日曆；行事曆', options: ['旅程', '日曆；行事曆', '品質', '記憶'], answerIndex: 1 },
+          { word: 'choice', meaning: '選擇', options: ['友誼', '驚奇；想知道', '選擇', '資源'], answerIndex: 2 },
+          { word: 'create', meaning: '創造', options: ['創造', '昨天', '知識', '支持；支援'], answerIndex: 0 },
+          { word: 'difficult', meaning: '困難的', options: ['小心的；仔細的', '困難的', '領導者', '模式；樣式'], answerIndex: 1 },
+          { word: 'enough', meaning: '足夠的', options: ['足夠的', '健康的', '友誼', '驚奇；想知道'], answerIndex: 0 },
+          { word: 'friendship', meaning: '友誼', options: ['友誼', '創造', '品質', '昨天'], answerIndex: 0 },
+          { word: 'healthy', meaning: '健康的', options: ['健康的', '領導者', '資源', '知識'], answerIndex: 0 },
+          { word: 'journey', meaning: '旅程', options: ['旅程', '選擇', '記憶', '支持；支援'], answerIndex: 0 },
+        ],
+      };
+    }
+
+    nodes.resetBtn.addEventListener('click', restartQuiz);
+    init();
+  </script>
+</body>
+</html>
