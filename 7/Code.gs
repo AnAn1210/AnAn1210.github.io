@@ -1,4 +1,4 @@
-const DEFAULT_SPREADSHEET_ID = '';
+const DEFAULT_SPREADSHEET_ID = '1AqDlnBGotmgORDNd1HNaSfvr5xsAhaaorap6WN3RxE0';
 const DEFAULT_SHEET_NAME = '題庫';
 const QUESTION_COUNT = 10;
 const TOTAL_SCORE = 100;
